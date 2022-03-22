@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ec87124f2413914a89344b5c38883f4, type: 3}
+  m_Name: MeleeBullet
+  m_EditorClassIdentifier: 
+  _projName: MeleeBullet
+  _projCollider: {fileID: 2554157037395330699, guid: c1bdb55ca1012524abb2222b0cfa8690, type: 3}
+  _projColor: {r: 1, g: 1, b: 1, a: 0.7019608}
+  _projTrail: {fileID: 0}

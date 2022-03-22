@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ec87124f2413914a89344b5c38883f4, type: 3}
+  m_Name: DefaultBullet
+  m_EditorClassIdentifier: 
+  _projName: DefaultBullet
+  _projCollider: {fileID: 7769601237709470266, guid: 28f6759f72d81b645a35020c51cd9cdf, type: 3}
+  _projColor: {r: 1, g: 0.8222994, b: 0.0141509175, a: 1}
+  _projTrail: {fileID: 7639904062614929219, guid: c34501c4064d9894995a7627744989cc, type: 3}
