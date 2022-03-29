@@ -4,7 +4,7 @@ public class FollowMouse : MonoBehaviour
 {
     public bool replaceCursorWithCrosshair;
     public GameObject crosshair;
-    void FixedUpdate()
+    void Update()
     {
         if (replaceCursorWithCrosshair)
         {
