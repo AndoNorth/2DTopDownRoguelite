@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2482374401855313314}
   - component: {fileID: 4311864262234658666}
   - component: {fileID: 6452760344219940973}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Wall
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6459823591012177762}
   - component: {fileID: 3146347008619418032}
-  m_Layer: 14
+  m_Layer: 15
   m_Name: MinimapIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,7 +249,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2068656205
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 0.3394932, g: 0.23282307, b: 0.4528302, a: 1}

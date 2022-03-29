@@ -21,11 +21,11 @@ TagManager:
   - Background
   - Enemies
   - MapObjects
+  - NPC
   - Player
   - Walls
   - Breakables
   - Minimap
-  - 
   - 
   - 
   - 
@@ -54,6 +54,9 @@ TagManager:
     locked: 0
   - name: GameItems
     uniqueID: 2463925707
+    locked: 0
+  - name: NPC
+    uniqueID: 579871363
     locked: 0
   - name: Player
     uniqueID: 2437834491
