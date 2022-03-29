@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
     }
-    public int _noEnemies=0;
+    public int _noEnemies = 0;
+    public int _noCoins = 0;
     private GameState _gameState;
     private enum GameState
     {
