@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29951bef6efa62b49913f626bc72a397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _item: {fileID: 0}
+  _item: {fileID: 7573515200959921131, guid: f8fb0b28b3ecc414bb973650c8af4500, type: 3}
   _dropVector: {x: 0, y: 1, z: 0}
 --- !u!114 &6152157983688727772
 MonoBehaviour:
