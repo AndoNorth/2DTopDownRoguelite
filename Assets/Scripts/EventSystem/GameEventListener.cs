@@ -11,15 +11,15 @@ namespace TemplateProject {
 
         private void Awake()
         {
-            _gameEvent.Register(this);
+            _gameEvent?.Register(this);
         }
         private void OnDestroy()
         {
-            _gameEvent.Deregister(this);
+            _gameEvent?.Deregister(this);
         }
         public virtual void RaiseEvent()
         {
-            _unityEvent.Invoke();
+            _unityEvent?.Invoke();
         }
     }
 }
