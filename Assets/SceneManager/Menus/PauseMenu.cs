@@ -3,11 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    private GameObject _pauseCover;
     private static bool _gameIsPaused = false;
-    private GameObject _resumeButton;
-    private GameObject _menuButton;
-    private GameObject _exitButton;
+    [SerializeField] private GameObject _resumeButton;
+    [SerializeField] private GameObject _menuButton;
+    [SerializeField] private GameObject _exitButton;
+    [SerializeField] private GameObject _pauseCover;
     private static bool _isGameOver;
     public static void GameOver()
     {
@@ -17,10 +17,6 @@ public class PauseMenu : MonoBehaviour
     {
         _gameIsPaused = false;
         _isGameOver = false;
-        _pauseCover = GameObject.Find("PauseCover");
-        _resumeButton = GameObject.Find("ResumeButton");
-        _menuButton = GameObject.Find("MenuButton");
-        _exitButton = GameObject.Find("ExitButton");
         Resume();
     }
     private void Update()
@@ -48,7 +44,7 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         _gameIsPaused = false;
-        //_pauseCover.SetActive(false);
+        _pauseCover.SetActive(false);
         _menuButton.SetActive(false);
         _exitButton.SetActive(false);
         _resumeButton.SetActive(false);
@@ -57,7 +53,7 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         _gameIsPaused = true;
-        //_pauseCover.SetActive(true);
+        _pauseCover.SetActive(true);
         _menuButton.SetActive(true);
         _exitButton.SetActive(true);
         if(!_isGameOver)
