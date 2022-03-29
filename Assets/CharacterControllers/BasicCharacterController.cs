@@ -20,6 +20,7 @@ public class BasicCharacterController : MonoBehaviour
     [SerializeField] private float _rollCooldown = 3f;
     [SerializeField] private LayerMask _rollCollisionMask;
     [SerializeField] private float _rollThisFrameBufferTime = 0.1f;
+    [SerializeField] private AfterImage[] afterImages;
     private bool _rollThisFrame;
     private Vector3 _rollVector;
     private float _rollSpeed;
@@ -121,6 +122,13 @@ public class BasicCharacterController : MonoBehaviour
         _rollSpeed = _maxRollSpeed;
         _rollCooldownTimer = _rollCooldown;
         _state = State.Rolling;
+        if(afterImages != null)
+        {
+            foreach (var afterImage in afterImages)
+            {
+                afterImage.gameObject.SetActive(true);
+            }
+        }
         _rollThisFrame = false;
     }
     private void Rolling()
@@ -138,6 +146,13 @@ public class BasicCharacterController : MonoBehaviour
         if (_rollSpeed < _minRollSpeed)
         {
             _state = State.Normal;
+            if (afterImages != null)
+            {
+                foreach (var afterImage in afterImages)
+                {
+                    afterImage.gameObject.SetActive(false);
+                }
+            }
         }
     }
     private void CooldownRoll()
