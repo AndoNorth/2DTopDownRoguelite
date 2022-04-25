@@ -41,6 +41,8 @@ public class GameAssets : MonoBehaviour
     public TemplateProject.TextPopup pfTextPopup;
     public GameObject playerCharacter;
     public DamageProjectile templateBullet;
+    public PickUpWeapon templateWeaponGO;
+    public PickUpWeaponUpgrade templateWeaponUpgradeGO;
     [Header("sorting layers")]
     public string healthBarSortingLayer;
     public string timerBarSortingLayer;

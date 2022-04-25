@@ -1,13 +1,16 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "GameAssets/Weapon Data", fileName = "New Weapon Data")]
-public class WeaponData : ScriptableObject
+public class WeaponData : ScriptableObject, IBuyableItem
 {
     public string _weaponName;
+    public string Name() => _weaponName;
     public ProjectileData _bullet;
     [Header("Visuals")]
     public Sprite _sprite;
+    public Sprite Sprite() => _sprite;
     public Color _color;
+    public Color Color() => _color;
     [Header("Stats")]
     public int _magazineSize;
     public float _bulletSpeed;
@@ -17,38 +20,18 @@ public class WeaponData : ScriptableObject
     public int _pierce;
     public bool _shootThroughWalls;
     public float _lifetime;
-    public enum AmmoType
-    {
-        Light,
-        Heavy,
-        Energy,
-        Explosive,
-    }
     public AmmoType _ammoType;
-    private int _ammoInMagazine;
-    public int AmmoInMagazine { get { return _ammoInMagazine; } }
-    public bool HasAmmo => AmmoInMagazine > 0;
-    public void ConsumeAmmo(int ammoConsumed)
+    public WeaponStats GetWeaponStats()
     {
-        _ammoInMagazine -= ammoConsumed;
-    }
-    public int AddAmmoToMagazine(int ammoAmount)
-    {
-        int ammoChange = 0;
-        if (ammoAmount <= 0)
+        return new WeaponStats()
         {
-            return ammoChange;
-        }
-        if (ammoAmount + _ammoInMagazine > _magazineSize)
-        {
-            ammoChange = _magazineSize - _ammoInMagazine;
-            _ammoInMagazine += ammoChange;
-        }
-        else
-        {
-            ammoChange = _ammoInMagazine + ammoAmount;
-            _ammoInMagazine = ammoChange;
-        }
-        return ammoAmount - ammoChange;
+            MagazineSize = _magazineSize,
+            BulletSpeed = _bulletSpeed,
+            BulletsPerSec = _bulletsPerSec,
+            ReloadTime = _reloadTime,
+            Damage = _damage,
+            Pierce = _pierce,
+            ShootThroughWalls = _shootThroughWalls,
+        };
     }
 }

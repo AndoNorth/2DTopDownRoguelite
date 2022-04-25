@@ -96,11 +96,11 @@ GameObject:
   - component: {fileID: 4846304306472904842}
   m_Layer: 12
   m_Name: Crosshair
-  m_TagString: Untagged
+  m_TagString: PlayerCursor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4846304306472904843
 Transform:
   m_ObjectHideFlags: 0
@@ -154,8 +154,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2120226781
-  m_SortingLayer: 0
+  m_SortingLayerID: 1006189195
+  m_SortingLayer: 6
   m_SortingOrder: 10
   m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 4846304307318122143}
   - component: {fileID: 259755228}
   - component: {fileID: 552025068}
+  - component: {fileID: 8507391343509878435}
   m_Layer: 12
   m_Name: Character
   m_TagString: Character
@@ -441,9 +442,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f636b049c4cf7c043ac353de3a863606, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weapons:
-  - {fileID: 11400000, guid: 51e3fc61790eaa840b7b087f971affa3, type: 2}
-  - {fileID: 11400000, guid: d1c1143e22313254bb6b0dbb9a778f38, type: 2}
+  _defaultWeapon: {fileID: 11400000, guid: 51e3fc61790eaa840b7b087f971affa3, type: 2}
   _firePoint: {fileID: 4846304306899248309}
   _offset: 0
 --- !u!114 &4846304307318122143
@@ -495,3 +494,17 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &8507391343509878435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4846304307318122155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac684a4aa5b5ec48983ba698c09b865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  replaceCursorWithCrosshair: 1
+  crosshair: {fileID: 4846304306472904840}

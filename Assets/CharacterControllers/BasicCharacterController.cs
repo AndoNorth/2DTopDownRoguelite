@@ -20,7 +20,6 @@ public class BasicCharacterController : MonoBehaviour
     [SerializeField] private float _rollCooldown = 3f;
     [SerializeField] private LayerMask _rollCollisionMask;
     [SerializeField] private float _rollThisFrameBufferTime = 0.1f;
-    [SerializeField] private AfterImage[] afterImages;
     private bool _rollThisFrame;
     private Vector3 _rollVector;
     private float _rollSpeed;
@@ -42,16 +41,12 @@ public class BasicCharacterController : MonoBehaviour
         switch (_state)
         {
             case State.Normal:
-                if(_moveVector.x != 0 || _moveVector.y != 0)
-                {
+                if (_moveVector.x != 0 || _moveVector.y != 0)
                     _lastMoveVector = _moveVector;
-                }
                 break;
             case State.Rolling:
                 if (_moveWithTransform)
-                {
                     break;
-                }
                 ResolveRoll();
                 break;
         }
@@ -63,21 +58,13 @@ public class BasicCharacterController : MonoBehaviour
         {
             case State.Normal:
                 if (_rollThisFrame && _rollCooldownTimer == 0)
-                {
                     if (_moveWithTransform)
-                    {
                         Dash();
-                    }
                     else
-                    {
                         StartRoll();
-                    }
-                }
                 else
-                {
                     CooldownRoll();
                     Move();
-                }
                 break;
             case State.Rolling:
                 Rolling();
@@ -85,31 +72,16 @@ public class BasicCharacterController : MonoBehaviour
         }
     }
     // movement
-    public void SetMoveVector(Vector3 moveVector)
-    {
-        _moveVector = moveVector;
-
-    }
+    public void SetMoveVector(Vector3 moveVector) => _moveVector = moveVector;
     private void Move()
     {
         if (_moveWithTransform)
-        {
             MoveWithTransform();
-        }
         else
-        {
             MoveWithVelocity();
-        }
     }
-    private void MoveWithVelocity()
-    {
-        _rb.velocity = _moveVector * _moveSpeed;
-
-    }
-    private void MoveWithTransform()
-    {
-        transform.position += _moveVector * _moveSpeed * Time.deltaTime;
-    }
+    private void MoveWithVelocity() => _rb.velocity = _moveVector * _moveSpeed;
+    private void MoveWithTransform() => transform.position += _moveVector * _moveSpeed * Time.deltaTime;
     // rolling
     public void RollThisFrame()
     {
@@ -122,13 +94,7 @@ public class BasicCharacterController : MonoBehaviour
         _rollSpeed = _maxRollSpeed;
         _rollCooldownTimer = _rollCooldown;
         _state = State.Rolling;
-        if(afterImages != null)
-        {
-            foreach (var afterImage in afterImages)
-            {
-                afterImage.gameObject.SetActive(true);
-            }
-        }
+        // start after images
         _rollThisFrame = false;
     }
     private void Rolling()
@@ -139,55 +105,38 @@ public class BasicCharacterController : MonoBehaviour
     {
         float speedReduction = _rollSpeed * _rollSpeedDropMultiplier;
         if (_smoothDecelleration)
-        {
             speedReduction = _rollDecelleration;
-        }
         _rollSpeed -= speedReduction * Time.deltaTime;
         if (_rollSpeed < _minRollSpeed)
         {
             _state = State.Normal;
-            if (afterImages != null)
-            {
-                foreach (var afterImage in afterImages)
-                {
-                    afterImage.gameObject.SetActive(false);
-                }
-            }
+            // stop after images
         }
     }
     private void CooldownRoll()
     {
         _rollCooldownTimer -= Time.deltaTime;
         if (_rollCooldownTimer <= 0)
-        {
             _rollCooldownTimer = 0;
-        }
     }
     private void RollBuffer()
     {
         _rollThisFrameBufferTimer -= Time.deltaTime;
         if (_rollThisFrameBufferTimer <= 0)
-        {
             _rollThisFrame = false;
-        }
     }
     private void Dash()
     {
         Vector3 dashPos = transform.position + _lastMoveVector * _rollDistance;
         RaycastHit2D raycastHit2d = Physics2D.Raycast(transform.position, _lastMoveVector, _rollDistance, _rollCollisionMask);
         if (raycastHit2d.collider != null)
-        {
             dashPos = raycastHit2d.point;
-        }
         _rb.MovePosition(dashPos);
         _rollCooldownTimer = _rollCooldown;
         _rollThisFrame = false;
     }
     // other
-    public void SetPosition(Vector3 position)
-    {
-        _rb.MovePosition(position);
-    }
+    public void SetPosition(Vector3 position) => _rb.MovePosition(position);
     public void FaceTarget(Vector3 position)
     {
         Vector3 difference = position - transform.position;

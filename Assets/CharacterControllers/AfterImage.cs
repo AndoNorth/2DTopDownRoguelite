@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-
+// TODO: make this use object pool
 public class AfterImage : MonoBehaviour
 {
     [SerializeField] Color _afterImageColor;

@@ -1,131 +1,128 @@
 ﻿using UnityEngine;
 using System;
-using System.Collections;
 
 public class PlayerWeaponSystem : MonoBehaviour
 {
-    struct PlayerAmmo
+    public Action OnAmmoChanged = delegate { };
+    public void TriggerOnAmmoChanged()
     {
-        public int lightReserveAmmo;
-        public int heavyReserveAmmo;
-        public int energyReserveAmmo;
-        public int explosiveReserveAmmo;
+        OnAmmoChanged();
     }
     public Action OnWeaponChanged = delegate { };
-    public Action OnAmmoChanged = delegate { };
-    // Weapon
-    WeaponData _currentWeapon;
-    public WeaponData CurrentWeapon => _currentWeapon;
-    [SerializeField] WeaponData[] _weapons = new WeaponData[2];
-    [SerializeField] Transform _firePoint;
-    [SerializeField] [Range(-180,180)] float _offset;
-    SpriteRenderer _currentWeaponSprite;
-    private bool _currentSlot = false;
-    // Shooting
-    private float _fireCooldown;
-    private bool ReadyToFire => _fireCooldown <= 0f;
-    // Reload
-    private int _reserveAmmo = 100;
-    private Coroutine _reloadRoutine;
-    private bool _isReloading;
-    public bool IsReloading { get { return _isReloading; } }
-    public int ReserveAmmo { get { return _reserveAmmo; } }
+    public void TriggerOnWeaponChanged()
+    {
+        OnWeaponChanged();
+    }
+    public Weapon CurrentWeapon => _weaponInventory.CurrentWeapon;
+    public Weapon GetWeapon(int weaponIdx) => _weaponInventory.GetWeapon(weaponIdx);
+    public int WeaponIdx => _weaponInventory.WeaponIdx;
+    public AmmoReserve AmmoReserve => _weaponInventory.AmmoReserve;
+    [SerializeField] private WeaponData _defaultWeapon;
+    [SerializeField] private Transform _firePoint;
+    [SerializeField][Range(-180, 180)] private float _offset;
+    private SpriteRenderer _currentWeaponSprite;
+    // systems to manage
+    private WeaponInventory _weaponInventory;
+    public int ReserveAmmo { get { return _weaponInventory.CurrentReserveAmmo; } }
+    private ShootingSystem _shootingSystem;
+    private ReloadSystem _reloadSystem;
+    public bool IsReloading { get { return _reloadSystem.IsReloading; } }
     private void Awake()
     {
         _currentWeaponSprite = _firePoint.GetComponent<SpriteRenderer>();
     }
     private void Start()
     {
-        ResetAllWeaponAmmo();
-        SelectWeapon(_currentSlot ? 1 : 0);
-
-        void ResetAllWeaponAmmo()
+        _weaponInventory = new WeaponInventory(_defaultWeapon);
+        _weaponInventory.OnWeaponChanged += TriggerOnWeaponChanged;
+        _weaponInventory.OnWeaponChanged += InterruptReload;
+        _shootingSystem = new ShootingSystem();
+        _reloadSystem = new ReloadSystem(this, _weaponInventory);
+        _reloadSystem.OnReloaded += TriggerOnAmmoChanged;
+    }
+    private void OnEnable()
+    {
+        if (_weaponInventory != null)
         {
-            foreach (WeaponData weapon in _weapons)
-            {
-                ResetWeaponAmmo(weapon);
-            }
+            _weaponInventory.OnWeaponChanged += TriggerOnWeaponChanged;
+            _weaponInventory.OnWeaponChanged += InterruptReload;
+        }
+        if (_reloadSystem != null)
+        {
+            _reloadSystem.OnReloaded += TriggerOnAmmoChanged;
+        }
+    }
+    private void OnDisable()
+    {
+        if (_weaponInventory != null)
+        {
+            _weaponInventory.OnWeaponChanged -= TriggerOnWeaponChanged;
+            _weaponInventory.OnWeaponChanged -= InterruptReload;
+        }
+        if (_reloadSystem != null)
+        {
+            _reloadSystem.OnReloaded -= TriggerOnAmmoChanged;
         }
     }
     private void Update()
     {
-        _fireCooldown -= Time.deltaTime;
-        if (_fireCooldown <= 0f)
-        {
-            _fireCooldown = 0;
-        }
+        _shootingSystem.TickFireCooldown();
     }
-    private void ResetWeaponAmmo(WeaponData weapon)
+    private void RefreshWeaponVisuals()
     {
-        int resetAmmo = weapon._magazineSize - weapon.AmmoInMagazine;
-        weapon.ConsumeAmmo(-resetAmmo);
+        _currentWeaponSprite.sprite = CurrentWeapon.WeaponData._sprite;
+        _currentWeaponSprite.color = CurrentWeapon.WeaponData._color;
     }
-    private void SelectWeapon(int slot)
+    public void ToggleWeaponSlot()
     {
         InterruptReload();
-        _currentWeapon = _weapons[slot];
+        _weaponInventory.ChangeToLastWeapon();
         RefreshWeaponVisuals();
-        OnWeaponChanged();
+    }
+    public void ChangeWeapon(int weaponIdx)
+    {
+        _weaponInventory.ChangeWeapon(weaponIdx);
         OnAmmoChanged();
     }
-    public void ToggleWeapon()
+    public void Reload()
     {
-        _currentSlot = !_currentSlot;
-        SelectWeapon(_currentSlot ? 1 : 0);
+        if (!_weaponInventory.HasReserveAmmo || _reloadSystem.MagazineIsFull || IsReloading)
+        {
+            return;
+        }
+        _reloadSystem.Reload(_weaponInventory.CurrentWeapon);
     }
+    private void InterruptReload() => _reloadSystem.InterruptReload();
     public void Fire()
     {
-        if (_currentWeapon.HasAmmo)
+        if (_weaponInventory.HasAmmo)
         {
-            InterruptReload();
-            if (ReadyToFire)
+            if (_shootingSystem.ReadyToFire)
             {
-                DamageProjectile bullet = PlayerBulletPool.instance.Spawn();
-                bullet.SetupProjectile(_firePoint.position, transform.rotation, _offset, _currentWeapon._bulletSpeed,
-                    _currentWeapon._bullet._projCollider, _currentWeapon._bullet._projColor,
-                    _currentWeapon._damage, _currentWeapon._pierce, _currentWeapon._shootThroughWalls,
-                    _currentWeapon._lifetime, LayerMask.GetMask(GameAssets.instance.playerShootableLayers));
-                _fireCooldown = 1.0f / _currentWeapon._bulletsPerSec;
-                _currentWeapon.ConsumeAmmo(1);
+                Weapon weapon = _weaponInventory.CurrentWeapon;
+                _reloadSystem.InterruptReload();
+                _shootingSystem.Fire(weapon, _firePoint.position, this.transform.rotation, _offset);
+                weapon.RemoveAmmoInMagazine(1);
                 OnAmmoChanged();
             }
         }
         else
-        {
             Reload();
-        }
     }
-    private void InterruptReload()
+    public void DropCurrentWeapon()
     {
-        if (_reloadRoutine != null)
-        {
-            StopCoroutine(_reloadRoutine);
-            _isReloading = false;
-        }
-    }
-    public void Reload()
-    {
-        if (!IsReloading)
-        {
-            _reloadRoutine = StartCoroutine(ReloadRoutine(_currentWeapon._reloadTime));
-        }
-    }
-    IEnumerator ReloadRoutine(float reloadTime)
-    {
-        _isReloading = true;
-        if(_reserveAmmo <= 0)
-        {
-            _isReloading = false;
-            yield return null;
-        }
-        yield return new WaitForSeconds(reloadTime);
-        _reserveAmmo = _currentWeapon.AddAmmoToMagazine(_reserveAmmo);
+        _weaponInventory.DropCurrentWeapon();
+        OnWeaponChanged();
         OnAmmoChanged();
-        _isReloading = false;
     }
-    private void RefreshWeaponVisuals()
+    public void PickUpWeapon(PickUpWeapon weapon)
     {
-        _currentWeaponSprite.sprite = _currentWeapon._sprite;
-        _currentWeaponSprite.color = _currentWeapon._color;
+        _weaponInventory.PickUpWeapon(weapon.Weapon);
+        OnWeaponChanged();
+        OnAmmoChanged();
+    }
+    public void PickUpWeaponUpgrade(PickUpWeaponUpgrade weaponUpgrade)
+    {
+        _weaponInventory.PickUpWeaponUpgrade(weaponUpgrade.WeaponUpgrade);
     }
 }

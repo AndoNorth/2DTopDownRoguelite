@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c4f7bd5f3e435f43aa4b318577a12a9, type: 3}
-  m_Name: DefaultWeapon
+  m_Name: PickUpWeapon
   m_EditorClassIdentifier: 
-  _weaponName: Default
+  _weaponName: PickUpWeapon
   _bullet: {fileID: 11400000, guid: 396db627ad662084d941ec8f74eb6433, type: 2}
   _sprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}
-  _color: {r: 1, g: 0.43602607, b: 0, a: 1}
-  _magazineSize: 10
-  _bulletSpeed: 12
-  _reloadTime: 2
-  _bulletsPerSec: 1.5
-  _damage: 100
-  _pierce: 3
+  _color: {r: 0, g: 1, b: 0.53587365, a: 1}
+  _magazineSize: 15
+  _bulletSpeed: 50
+  _reloadTime: 1
+  _bulletsPerSec: 7.5
+  _damage: 25
+  _pierce: 0
   _shootThroughWalls: 0
   _lifetime: 5
-  _ammoType: 1
+  _ammoType: 2

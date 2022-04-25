@@ -3,15 +3,15 @@ using UnityEngine;
 public class CharacterWeaponSystem : MonoBehaviour
 {
     [SerializeField]
-    WeaponData _currentWeapon;
+    private WeaponData _currentWeapon;
     [SerializeField]
-    WeaponData[] _weapons = new WeaponData[2];
+    private WeaponData[] _weapons = new WeaponData[2];
     [SerializeField]
-    Transform _firePoint;
+    private Transform _firePoint;
     [SerializeField]
-    SpriteRenderer _currentWeaponSprite;
+    private SpriteRenderer _currentWeaponSprite;
     [SerializeField]
-    [Range(-180, 180)] float _offset;
+    [Range(-180, 180)] private float _offset;
     private bool _currentSlot = false;
     private float _fireCooldown;
     private bool ReadyToFire => _fireCooldown <= 0f;
