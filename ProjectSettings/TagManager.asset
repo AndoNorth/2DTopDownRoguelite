@@ -9,6 +9,7 @@ TagManager:
   - unbreakableWall
   - Wall
   - MinimapCamera
+  - PlayerCursor
   layers:
   - Default
   - TransparentFX
