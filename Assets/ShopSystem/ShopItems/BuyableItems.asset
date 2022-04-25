@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e29fc8b25e59046849102e38fd7c4f, type: 3}
+  m_Name: BuyableItems
+  m_EditorClassIdentifier: 
+  _weapons:
+  - {fileID: 11400000, guid: d1c1143e22313254bb6b0dbb9a778f38, type: 2}
+  - {fileID: 11400000, guid: 8b1c5ef46cac1794fac47c00ad023d92, type: 2}
+  _weaponUpgrades:
+  - {fileID: 11400000, guid: 8a054e38cd95a55439fa8baa0e6c5043, type: 2}
+  - {fileID: 11400000, guid: 0a8eefe383ef1454fa97e611dfad064e, type: 2}
+  - {fileID: 11400000, guid: c109b2e80b64957479a23cf9eee19c31, type: 2}
+  - {fileID: 11400000, guid: 69c25bf44c458884892be8faaee517d5, type: 2}
+  - {fileID: 11400000, guid: c20c3267b778c2e4ab9869bd319e2486, type: 2}
+  - {fileID: 11400000, guid: c48857454782cf3429cd370e28dbc434, type: 2}
+  _typeAndCost:
+  - type: WeaponData
+    cost: 30
+  - type: WeaponUpgrade
+    cost: 20
