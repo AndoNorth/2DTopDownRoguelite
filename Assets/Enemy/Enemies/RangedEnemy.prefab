@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3111804305681198596}
   - component: {fileID: 3111804305681198603}
   - component: {fileID: 2598694577178144418}
+  - component: {fileID: 8479500325291061108}
   m_Layer: 9
   m_Name: RangedEnemy
   m_TagString: Enemy
@@ -212,6 +213,23 @@ MonoBehaviour:
   _attackRange: 5
   _retreatRange: 2
   _retreatPercentage: 0.3
+--- !u!114 &8479500325291061108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6982068404216338579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 667a8755b76a5334e8af8d95cc2ca423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dropItem: {fileID: 4029702441220203778, guid: 8713e4cb06c499448ad9be7e99ed98b2, type: 3}
+  _dropAmountRange:
+    min: 3
+    max: 5
+  _dropInRandomRadius: 1
 --- !u!1 &6982068404234493519
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,7 +385,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2068656205
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}

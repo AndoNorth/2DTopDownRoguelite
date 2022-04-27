@@ -89,7 +89,6 @@ public class MeleeEnemy : MonoBehaviour
         {
             _healthSystem.OnHealthChanged -= TakeDamageVisuals;
         }
-        GameManager.instance._noCoins++;
     }
     private bool InAttackRange()
     {
