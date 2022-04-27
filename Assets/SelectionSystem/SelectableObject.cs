@@ -22,6 +22,7 @@ public class SelectableObject : MonoBehaviour
     public bool IsSelected => _isSelected;
     public bool IsInteractable => _interactableDistance > Vector3.Distance(this.transform.position, GameAssets.instance.playerCharacter.transform.position);
     private bool _isSetup = false;
+    public bool IsSetup => _isSetup;
     private void OnEnable()
     {
         if (_isSetup)

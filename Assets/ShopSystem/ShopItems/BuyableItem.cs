@@ -6,18 +6,22 @@ public class BuyableItem : MonoBehaviour, IInteractable
     private ShopKeeper _shopKeeper;
     private SpriteRenderer _spriteRenderer;
     private ShopItem _shopItem;
-    private void Start()
+    public ShopItem ShopItem { get { return _shopItem; } }
+    private void Awake()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();        
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
     public void Interact()
     {
         _shopKeeper.BuyItem(_shopItem);
     }
-    public void SetupShopitem(ShopKeeper shopKeeper, ShopItem shopItem, Sprite sprite, Color color)
+    public void SetShopItem(ShopKeeper shopKeeper, ShopItem shopItem)
     {
         _shopKeeper = shopKeeper;
         _shopItem = shopItem;
+    }
+    public void SetShopitemVisuals(Sprite sprite, Color color)
+    {
         _spriteRenderer.sprite = sprite;
         _spriteRenderer.color = color;
     }

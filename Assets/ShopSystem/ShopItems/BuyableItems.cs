@@ -59,6 +59,7 @@ public class ItemCost
     public int cost;
     public bool TypeExists => (null != Type.GetType(type));
 }
+[System.Serializable]
 public class ShopItem
 {
     public string item;

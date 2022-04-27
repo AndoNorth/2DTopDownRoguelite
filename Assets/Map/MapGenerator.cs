@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // drunkard walk algorithm 
 public class MapGenerator : MonoBehaviour
 {
-	private enum GridSpace { empty, floor, wall, spawner};
+	private enum GridSpace { empty, floor, wall, spawner, shopkeeper };
 	private GridSpace[,] _grid;
 	private int _roomHeight, _roomWidth;
 	private float _worldUnitsInOneGridCell = 1;
@@ -13,6 +12,7 @@ public class MapGenerator : MonoBehaviour
 	[SerializeField] private Vector2 _roomtSizeWorldUnits = new Vector2(50, 50);
 	[SerializeField] private GameObject _wallObj, _floorObj, _unbreakableWallObj;
 	[SerializeField] private GameObject[] _pfEnemySpawners;
+	[SerializeField] private GameObject _pfShopkeeper; // TODO: add shopkeeper spawn
 	[Header("Fill Settings")]
 	[SerializeField] private bool _removeSingleWalls;
 	[SerializeField] private float _percentToFill = 0.2f;
@@ -20,6 +20,10 @@ public class MapGenerator : MonoBehaviour
 	[SerializeField] private float _percentToStartSpawners = 0.05f;
 	[SerializeField] private float _chanceToCreateSpawner = 0.05f;
 	[SerializeField] private int _maxNoSpawners = 10;
+	[Header("Shopkeepr Settings")]
+	[SerializeField] private float _percentToStartShopkeepers = 0.05f;
+	[SerializeField] private float _chanceToCreateShopkeeper = 0.05f;
+	[SerializeField] private int _maxNoShopkeepers = 2;
 	private struct Walker
 	{
 		public Vector2 dir;
@@ -34,6 +38,7 @@ public class MapGenerator : MonoBehaviour
 	[SerializeField] private int _firstWalkerSpawnPoint = 4, _initNoWalkers = 1, _minWalkers = 1, _maxWalkers = 10;
 	void Start()
 	{
+		SetupParentObjects();
 		Setup(); 
 		CreateFloors(); // sends walkers to generate map
 		//CreateWalls(); // outlines generated map
@@ -99,6 +104,12 @@ public class MapGenerator : MonoBehaviour
 					&& NumberOfGridSpaceObject(GridSpace.spawner) <= _maxNoSpawners)
 				{
 					_grid[(int)myWalker.pos.x, (int)myWalker.pos.y] = GridSpace.spawner;
+				}
+				else if (iterations > 5 && PercentOfGridSpaceObject(GridSpace.floor) >= _percentToStartShopkeepers
+					&& Random.value < _chanceToCreateShopkeeper
+					&& NumberOfGridSpaceObject(GridSpace.shopkeeper) <= _maxNoShopkeepers)
+                {
+					_grid[(int)myWalker.pos.x, (int)myWalker.pos.y] = GridSpace.shopkeeper;
 				}
 				else
 				{
@@ -270,19 +281,23 @@ public class MapGenerator : MonoBehaviour
 				switch (_grid[x, y])
 				{
 					case GridSpace.empty:
-						Spawn(x, y, _floorObj);
-						Spawn(x, y, _wallObj);
+						Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString()));
+						Spawn(x, y, _wallObj).transform.SetParent(this.transform.Find(GridSpace.wall.ToString())); ;
 						break;
 					case GridSpace.floor:
-						Spawn(x, y, _floorObj);
+						Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString())); ;
 						break;
 					case GridSpace.wall:
-						Spawn(x, y, _floorObj);
-						Spawn(x, y, _wallObj);
+						Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString())); ;
+						Spawn(x, y, _wallObj).transform.SetParent(this.transform.Find(GridSpace.wall.ToString())); ;
 						break;
 					case GridSpace.spawner:
-						Spawn(x, y, _floorObj);
-						Spawn(x, y, _pfEnemySpawners[Random.Range(0, _pfEnemySpawners.Length)]);
+						Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString())); ;
+						Spawn(x, y, _pfEnemySpawners[Random.Range(0, _pfEnemySpawners.Length)]).transform.SetParent(this.transform.Find(GridSpace.spawner.ToString())); ;
+						break;
+					case GridSpace.shopkeeper:
+						Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString())); ;
+						Spawn(x, y, _pfShopkeeper).transform.SetParent(this.transform.Find(GridSpace.shopkeeper.ToString())); ;
 						break;
 				}
 			}
@@ -297,6 +312,7 @@ public class MapGenerator : MonoBehaviour
 			Spawn(-1, y, _unbreakableWallObj);
 			Spawn(_roomWidth, y, _unbreakableWallObj);
 		}
+		GameManager.instance._isMapSetup = true;
 	}
 	Vector2 RandomDirection()
 	{
@@ -329,21 +345,16 @@ public class MapGenerator : MonoBehaviour
 		return count;
 	}
 	// calculates the percentage of grid space objects in grid space
-	private float PercentOfGridSpaceObject(GridSpace gridSpace)
-	{
-		return (float)NumberOfGridSpaceObject(gridSpace) / (float)_grid.Length;
-	}
+	private float PercentOfGridSpaceObject(GridSpace gridSpace) => (float)NumberOfGridSpaceObject(gridSpace) / (float)_grid.Length;
 	// Generic GameObject spawner function
-	void Spawn(float x, float y, GameObject toSpawn)
+	GameObject Spawn(float x, float y, GameObject toSpawn)
 	{
 		//find the position to spawn
 		Vector2 offset = _roomtSizeWorldUnits / 2.0f;
 		Vector2 spawnPos = new Vector2(x, y) * _worldUnitsInOneGridCell - offset;
 		//spawn object
 		GameObject spawnedGO = Instantiate(toSpawn, spawnPos, Quaternion.identity);
-		spawnedGO.transform.SetParent(this.transform);
-
-		GameManager.instance._isMapSetup = true;
+		return spawnedGO;
 	}
 	// 0 = top-left, 1 = top-middle, 2 = top-right, 
 	// 3 = middle-left, 4 = center, 5 = middle-right,
@@ -374,6 +385,16 @@ public class MapGenerator : MonoBehaviour
 				return new Vector2(Mathf.RoundToInt(3 * _roomWidth / 4.0f), Mathf.RoundToInt(3 * _roomHeight / 4.0f));
 		}
 	}
+	// this is to organize spawned objects
+	private void SetupParentObjects()
+    {
+        foreach (GridSpace gridSpace in (GridSpace[]) System.Enum.GetValues(typeof(GridSpace) ) )
+        {
+			GameObject GO = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+			GO.name = gridSpace.ToString();
+			GO.transform.SetParent(this.transform);
+        }
+    }
 	void AnalyzeMap()
 	{
 		// divide the map into 9 sections
