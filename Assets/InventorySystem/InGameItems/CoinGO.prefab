@@ -128,7 +128,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initSpeed: 0
-  _acceleration: 8
-  _maxSpeed: 50
+  _acceleration: 10
+  _maxSpeed: 200
+  _magnetRange: 0.3
   _delayStartMovingSec: 0.5
-  _repeatEveryNSec: 0.3
+  _repeatEveryNSec: 0.2
