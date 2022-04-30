@@ -124,5 +124,6 @@ public class PlayerWeaponSystem : MonoBehaviour
     public void PickUpWeaponUpgrade(PickUpWeaponUpgrade weaponUpgrade)
     {
         _weaponInventory.PickUpWeaponUpgrade(weaponUpgrade.WeaponUpgrade);
+        OnWeaponChanged();
     }
 }
