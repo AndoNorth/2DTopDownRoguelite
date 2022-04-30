@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 454339603153571679}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -97,6 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dab169316c5c114f975d71e7e3bb71f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _afterImageColor: {r: 0.79607844, g: 1, b: 0.96862745, a: 1}
-  _startTime: 0
-  _refreshImageRate: 0.3
+  _afterImageColorTint: {r: 0.22694907, g: 0.9004689, b: 0.9433962, a: 1}
+  _strength: 0.5
+  _fadeTime: 1

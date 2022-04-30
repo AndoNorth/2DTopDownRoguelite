@@ -1,45 +1,43 @@
 using System.Collections;
 using UnityEngine;
-// TODO: make this use object pool
+using System;
+
 public class AfterImage : MonoBehaviour
 {
-    [SerializeField] Color _afterImageColor;
-    [SerializeField] float _startTime;
-    [SerializeField] float _refreshImageRate;
-    SpriteRenderer _spriteRenderer;
-    // update transform every iteration
+    private Action<AfterImage> _killAction;
+    [SerializeField] private Color _afterImageColorTint;
+    [SerializeField] private float _strength;
+    [SerializeField] private float _fadeTime;
+    private Color _afterImageColor;
+    private SpriteRenderer _spriteRenderer;
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-    private void Start()
-    {
-        _spriteRenderer.color = _afterImageColor;
-        InvokeRepeating("UpdateAfterImage", _startTime, _refreshImageRate);
-    }
-    private void OnEnable()
-    {
-        transform.position = GameAssets.instance.playerCharacter.transform.position;
-        InvokeRepeating("UpdateAfterImage", _startTime, _refreshImageRate);
     }
     private void OnDisable()
     {
         CancelInvoke();
     }
-    private void UpdateAfterImage()
+    public void SetupAfterImage(Vector3 position, Color color)
     {
-        transform.position = GameAssets.instance.playerCharacter.transform.position;
-        _spriteRenderer.color = _afterImageColor;
-        StartCoroutine(FadeTo(0.0f, 1.0f));
+        transform.position = position;
+        _afterImageColor = Color.Lerp(color, _afterImageColorTint, _strength);
+        StartCoroutine(FadeTo(0.0f, _fadeTime));
     }
     IEnumerator FadeTo(float aValue, float fadeTime)
     {
-        float alpha = _spriteRenderer.color.a;
+        float alpha = _afterImageColor.a;
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / fadeTime)
         {
             Color newColor = new Color(_afterImageColor.r, _afterImageColor.g, _afterImageColor.b, Mathf.Lerp(alpha, aValue, t));
             _spriteRenderer.color = newColor;
             yield return null;
         }
+        _killAction(this);
+    }
+    public void InitKillAction(Action<AfterImage> killAction)
+    {
+        _killAction = killAction;
     }
 }

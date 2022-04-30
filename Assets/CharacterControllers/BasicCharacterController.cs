@@ -25,7 +25,9 @@ public class BasicCharacterController : MonoBehaviour
     private float _rollSpeed;
     private float _rollCooldownTimer;
     private float _rollThisFrameBufferTimer;
+    private SpriteRenderer _spriteRenderer;
     private State _state;
+
     private enum State
     {
         Normal,
@@ -35,6 +37,7 @@ public class BasicCharacterController : MonoBehaviour
     {
         _rb = transform.GetComponent<Rigidbody2D>();
         _state = State.Normal;
+        _spriteRenderer = transform.GetComponent<SpriteRenderer>();
     }
     private void Update()
     {
@@ -71,6 +74,10 @@ public class BasicCharacterController : MonoBehaviour
                 break;
         }
     }
+    private void OnDisable()
+    {
+        CancelInvoke();
+    }
     // movement
     public void SetMoveVector(Vector3 moveVector) => _moveVector = moveVector;
     private void Move()
@@ -94,7 +101,7 @@ public class BasicCharacterController : MonoBehaviour
         _rollSpeed = _maxRollSpeed;
         _rollCooldownTimer = _rollCooldown;
         _state = State.Rolling;
-        // start after images
+        StartAfterImage();
         _rollThisFrame = false;
     }
     private void Rolling()
@@ -110,7 +117,7 @@ public class BasicCharacterController : MonoBehaviour
         if (_rollSpeed < _minRollSpeed)
         {
             _state = State.Normal;
-            // stop after images
+            StopAfterImage();
         }
     }
     private void CooldownRoll()
@@ -134,6 +141,14 @@ public class BasicCharacterController : MonoBehaviour
         _rb.MovePosition(dashPos);
         _rollCooldownTimer = _rollCooldown;
         _rollThisFrame = false;
+    }
+    // after image
+    private void StartAfterImage() => InvokeRepeating("SpawnAfterImage", 0.01f, 0.1f);
+    private void StopAfterImage() => CancelInvoke("SpawnAfterImage");
+    private void SpawnAfterImage()
+    {
+        AfterImage afterImage = AfterImagePool.instance.Spawn();
+        afterImage.SetupAfterImage(transform.position, _spriteRenderer.color);
     }
     // other
     public void SetPosition(Vector3 position) => _rb.MovePosition(position);
