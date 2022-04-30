@@ -23,21 +23,8 @@ public class SelectableObject : MonoBehaviour
     public bool IsInteractable => _interactableDistance > Vector3.Distance(this.transform.position, GameAssets.instance.playerCharacter.transform.position);
     private bool _isSetup = false;
     public bool IsSetup => _isSetup;
-    private void OnEnable()
-    {
-        if (_isSetup)
-        {
-            SelectionManager.instance.AddToObjectsList(this);
-        }
-    }
-    private void OnDisable()
-    {
-        SelectionManager.instance.RemoveFromObjectsList(this);
-    }
     private void Start()
     {
-        SelectionManager.instance.AddToObjectsList(this);
-
         SetupOutline();
         if (_showInteractableText || _showSelectedText)
         {

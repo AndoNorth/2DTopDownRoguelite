@@ -16,14 +16,8 @@ public class SelectionManager : MonoBehaviour
             Destroy(this);
         }
     }
-    [SerializeField] private Collider2D _selector;
-    private List<SelectableObject> _selectableObjects;
     [SerializeField] private SelectableObject _currentlySelectedObject;
     public SelectableObject CurrentlySelectedItem { get { return _currentlySelectedObject; } }
-    private void Start()
-    {
-        _selectableObjects = new List<SelectableObject>(FindObjectsOfType<SelectableObject>());
-    }
     private void Update()
     {
         if(_currentlySelectedObject != null)
@@ -43,14 +37,5 @@ public class SelectionManager : MonoBehaviour
                 _currentlySelectedObject.SetIsSelected(true);
             }
         }
-    }
-
-    public void AddToObjectsList(SelectableObject selectableObject)
-    {
-        _selectableObjects.Add(selectableObject);
-    }
-    public void RemoveFromObjectsList(SelectableObject selectableObject)
-    {
-        _selectableObjects.Remove(selectableObject);
     }
 }
