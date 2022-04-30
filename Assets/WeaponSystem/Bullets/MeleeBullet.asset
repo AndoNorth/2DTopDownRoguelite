@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _projName: MeleeBullet
   _projCollider: {fileID: 2554157037395330699, guid: c1bdb55ca1012524abb2222b0cfa8690, type: 3}
-  _projColor: {r: 1, g: 1, b: 1, a: 0.7019608}
+  _projColor: {r: 1, g: 1, b: 1, a: 0.29803923}
   _projTrail: {fileID: 0}

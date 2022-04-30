@@ -12,18 +12,14 @@ public class ExtrudeSprite : MonoBehaviour
     public float frontDistance = -0.249f;
     public float backDistance = 0.249f;
 
-    void Start()
-    {
-        ExtrudeSpriteFromCollider();
-    }
-
-    public void ExtrudeSpriteFromCollider()
+    public void ExtrudeSpriteFromCollider() => ExtrudeSpriteFromCollider(extrudeColor);
+    public void ExtrudeSpriteFromCollider(Color color)
     {
         PolygonCollider2D pol = GetComponent<PolygonCollider2D>();
         Mesh m = CreateMesh(pol.points, frontDistance, backDistance);
 
         GetComponent<MeshFilter>().sharedMesh = m;
-        GetComponent<MeshRenderer>().material.color = extrudeColor;
+        GetComponent<MeshRenderer>().material.color = color;
     }
     private static Mesh CreateMesh(Vector2[] poly, float frontDistance = -10, float backDistance = 10)
     {
