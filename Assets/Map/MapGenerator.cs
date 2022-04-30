@@ -101,13 +101,13 @@ public class MapGenerator : MonoBehaviour
 			{
 				if (iterations > 5 && PercentOfGridSpaceObject(GridSpace.floor) >= _percentToStartSpawners
 					&& Random.value < _chanceToCreateSpawner 
-					&& NumberOfGridSpaceObject(GridSpace.spawner) <= _maxNoSpawners)
+					&& NumberOfGridSpaceObject(GridSpace.spawner) < _maxNoSpawners)
 				{
 					_grid[(int)myWalker.pos.x, (int)myWalker.pos.y] = GridSpace.spawner;
 				}
 				else if (iterations > 5 && PercentOfGridSpaceObject(GridSpace.floor) >= _percentToStartShopkeepers
 					&& Random.value < _chanceToCreateShopkeeper
-					&& NumberOfGridSpaceObject(GridSpace.shopkeeper) <= _maxNoShopkeepers)
+					&& NumberOfGridSpaceObject(GridSpace.shopkeeper) < _maxNoShopkeepers)
                 {
 					_grid[(int)myWalker.pos.x, (int)myWalker.pos.y] = GridSpace.shopkeeper;
 				}
