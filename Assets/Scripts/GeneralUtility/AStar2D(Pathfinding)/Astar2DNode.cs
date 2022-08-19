@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+[System.Serializable]
 public class Astar2DNode
 {
     public bool walkable;
@@ -24,12 +22,6 @@ public class Astar2DNode
         gridY = _gridY;
     }
 
-    public int fCost
-    {
-        get
-        {
-            return gCost + hCost;
-        }
-    }
+    public int fCost { get { return gCost + hCost; } }
 
 }

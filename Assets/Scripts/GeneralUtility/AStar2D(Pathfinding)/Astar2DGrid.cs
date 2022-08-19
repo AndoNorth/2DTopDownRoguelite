@@ -1,20 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Astar2DGrid : MonoBehaviour
 {
-    public Transform seeker, target;
     public LayerMask obstacleMask;
     public Vector3 gridWorldSize;
     public float nodeRadius;
 
-    public List<Astar2DNode> path;
-
     Astar2DNode[,] grid;
 
-    float nodeDiameter;
-    int gridSizeX, gridSizeY;
+    float nodeDiameter = 0.5f;
+    int gridSizeX = 50, gridSizeY = 50;
 
     void Start()
     {
@@ -24,7 +20,7 @@ public class Astar2DGrid : MonoBehaviour
         CreateGrid();
     }
     // creates the grid array
-    void CreateGrid()
+    public void CreateGrid()
     {
         grid = new Astar2DNode[gridSizeX, gridSizeY];
         // Vector3.right = (1,0,0) Vector3.up = (0,1,0) Vector3.forward = (0,0,1) etc...
@@ -38,10 +34,9 @@ public class Astar2DGrid : MonoBehaviour
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius)
                                         + Vector3.up * (y * nodeDiameter + nodeRadius);
                 // specific solution for 2D - use sphere for 3D
-                bool walkable = !(Physics2D.OverlapCircle(worldPoint, nodeRadius, obstacleMask));
+                bool walkable = !(Physics2D.OverlapCircle(worldPoint, nodeRadius-.1f, obstacleMask));
                 grid[x, y] = new Astar2DNode(walkable, worldPoint, x, y);
             }
-
         }
     }
     // return node position in grid array
@@ -64,17 +59,15 @@ public class Astar2DGrid : MonoBehaviour
     public List<Astar2DNode> GetNeighbours(Astar2DNode node)
     {
         List<Astar2DNode> neighbours = new List<Astar2DNode>();
-        // loops a 3x3 grid       x|x|x
-        // setting the neighbours x|o|x
-        // positions              x|x|x
+        // loops a 3x3 grid        x|x|x
+        // setting the neighbours  x|o|x
+        //                         x|x|x
         for (int x = -1; x <= 1; x++)
 		{
 	        for (int y = -1; y <= 1; y++)
 			{
                 if(x == 0 && y == 0)
-                {
                     continue; // if equal to current node skip this iteration
-                }
 
                 int checkX = node.gridX + x;
                 int checkY = node.gridY + y;
@@ -82,9 +75,7 @@ public class Astar2DGrid : MonoBehaviour
                 // if so then add it to the neighbour list
                 if(checkX >= 0 && checkX < gridSizeX
                         && checkY >= 0 && checkY < gridSizeY)
-                {
                     neighbours.Add(grid[checkX, checkY]);
-                }
 			}
 		}
         return neighbours;
@@ -96,27 +87,11 @@ public class Astar2DGrid : MonoBehaviour
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y, 1));
         if (grid != null)
         {
-            Astar2DNode seekerNode = NodeFromWorldPoint(seeker.position);
-            Astar2DNode targetNode = NodeFromWorldPoint(target.position);
             foreach (Astar2DNode n in grid)
             {
                 // (n.walkable)? checks whether it is true, makes the box white or red
-                // question the variable, the action taken is divided by a colon
-                Gizmos.color = (n.walkable)?Color.white:Color.red;
-                if (path != null)
-                {
-                    Debug.Log("path =/= null");
-                    if (path.Contains(n))
-                    {
-                        Gizmos.color = Color.black;
-                    }
-                }
-                if (seekerNode == n || targetNode == n)
-                {
-                    Gizmos.color = Color.cyan;
-                }
-                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
-
+                Gizmos.color = (n.walkable) ? Color.white : Color.red;
+                Gizmos.DrawWireCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
     }

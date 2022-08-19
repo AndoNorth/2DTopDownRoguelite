@@ -40,7 +40,7 @@ public class HealthSystem : MonoBehaviour, IDamagable
         _maxHealth = maxHealth;
         SetToMaxHealth();
     }
-    private void SetToMaxHealth()
+    public void SetToMaxHealth()
     {
         SetHealth(_maxHealth);
     }

@@ -14,7 +14,7 @@ public class CharacterWeaponSystem : MonoBehaviour
     [Range(-180, 180)] private float _offset;
     private bool _currentSlot = false;
     private float _fireCooldown;
-    private bool ReadyToFire => _fireCooldown <= 0f;
+    public bool ReadyToFire => _fireCooldown <= 0f;
     private void Awake()
     {
         _currentWeaponSprite = _firePoint.GetComponent<SpriteRenderer>();

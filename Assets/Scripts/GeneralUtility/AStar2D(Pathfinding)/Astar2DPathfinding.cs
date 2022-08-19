@@ -1,24 +1,45 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Astar2DPathfinding : MonoBehaviour
 {
-    public Transform seeker, target;
+    private Astar2DGrid _grid;
+    private Vector3 _targetPos;
+    private Transform _target;
+    public bool EndNodeReached => pathList.Count <= 1;
+    private bool NextNodeReached => TargetReached(pathList[0].worldPosition);
+    public Vector3 NextPosition => pathList[0].worldPosition;
+    private float _targetReachedThreshold = 0.3f;
+    private List<Astar2DNode> pathList;
 
-    Astar2DGrid grid;
-
-    void Awake(){
-        grid = GetComponent<Astar2DGrid>();
+    private void Start()
+    {
+        _grid = FindObjectOfType<Astar2DGrid>();
+        _target = this.transform;
+        FindPath();
     }
 
-    void Update(){
-        FindPath(seeker.position, target.position);
+    private void Update()
+    {
+        if (EndNodeReached){
+            CancelInvoke();
+            return;
+        }
+        if (NextNodeReached)
+        {
+            ConsumePath();
+        }
     }
+    public void InvokeFindPath() => InvokeRepeating("FindPath", 0.5f, 1.0f);
+    public void CancelFindPath() => CancelInvoke();
+    public void FindPath() => FindPath(this.transform.position, _target.position);
     // Astar pathfinding
-    void FindPath(Vector3 startPos, Vector3 targetPos){
-        Astar2DNode startNode = grid.NodeFromWorldPoint(startPos);
-        Astar2DNode targetNode = grid.NodeFromWorldPoint(targetPos);
+    public void FindPath(Vector3 startPos, Vector3 targetPos)
+    {
+        _grid.CreateGrid(); // updates the state of grid spaces, consider optimizing
+
+        Astar2DNode startNode = _grid.NodeFromWorldPoint(startPos);
+        Astar2DNode targetNode = _grid.NodeFromWorldPoint(targetPos);
 
         List<Astar2DNode> openSet = new List<Astar2DNode>(); // set of nodes to be assessed
         HashSet<Astar2DNode> closedSet = new HashSet<Astar2DNode>(); // set of nodes that have been assessed
@@ -43,14 +64,14 @@ public class Astar2DPathfinding : MonoBehaviour
             // add the selected node to the closed list
             closedSet.Add(currentNode);
             // if the selected node is the target node then retrace the parents of each node
-            // in the closed list iteratively from the targetNode
+            // in the closed list iteratively from the targetNode, and set grid.path
             if (currentNode == targetNode){
-                RetracePath(startNode, targetNode);
+                pathList = RetracePath(startNode, targetNode);
                 return;
             }
             // else find the neighbour nodes to the newly selected node
             // loop through each of them adding them to the open list
-            foreach (Astar2DNode neighbour in grid.GetNeighbours(currentNode)){
+            foreach (Astar2DNode neighbour in _grid.GetNeighbours(currentNode)){
                 // if the neighbouring node is not a walkable node or is in the closed list
                 // do not add it to the open list
                 if (!neighbour.walkable || closedSet.Contains(neighbour)){
@@ -77,8 +98,14 @@ public class Astar2DPathfinding : MonoBehaviour
             }
         }
     }
+    // set target position
+    public void SetTarget(Vector3 pos) => _targetPos = pos;
+    public void SetTarget(Transform target) => _target = target;
+    public void SetTarget(GameObject target) => _target = target.transform;
+    private bool TargetReached(Vector3 targetPos) => Vector3.Distance(targetPos, this.transform.position) < _targetReachedThreshold;
     // calculate the distance between two nodes
-    int GetDistance(Astar2DNode nodeA, Astar2DNode nodeB){
+    private int GetDistance(Astar2DNode nodeA, Astar2DNode nodeB)
+    {
         int distanceX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
         int distanceY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
         // 14 is sqrt(2) * 10, 1 is 1 * 10
@@ -89,7 +116,8 @@ public class Astar2DPathfinding : MonoBehaviour
         return (14 * distanceX + 10 * (distanceY - distanceX));
     }
     // using the parents of each node we retrace the path to the startNode
-    void RetracePath(Astar2DNode startNode, Astar2DNode endNode){
+    private List<Astar2DNode> RetracePath(Astar2DNode startNode, Astar2DNode endNode)
+    {
         List<Astar2DNode> path = new List<Astar2DNode>();
         Astar2DNode currentNode = endNode;
         // loop the Nodes from the currentNode until we reach the startNode
@@ -99,7 +127,26 @@ public class Astar2DPathfinding : MonoBehaviour
         }
         // since we traced from the endNode we must reverse the list
         path.Reverse();
-        // set the path
-        grid.path = path;
+        return path;
+    }
+    private void ConsumePath()
+    {
+        if (pathList == null || pathList.Count == 0)
+            return;
+
+        Astar2DNode node = pathList[0];
+        pathList.Remove(node);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_grid != null && pathList != null)
+        {
+            foreach (Astar2DNode n in pathList)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawCube(n.worldPosition, Vector3.one * (_grid.nodeRadius - .1f));
+            }
+        }
     }
 }

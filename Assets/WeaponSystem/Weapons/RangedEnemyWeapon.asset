@@ -20,7 +20,8 @@ MonoBehaviour:
   _bulletSpeed: 15
   _reloadTime: 2
   _bulletsPerSec: 0.5
-  _damage: 7
+  _damage: 5
   _pierce: 0
   _shootThroughWalls: 0
   _lifetime: 5
+  _ammoType: 0
