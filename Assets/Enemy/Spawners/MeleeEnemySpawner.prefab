@@ -45,11 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad4d2b65501263345bfcb14405419b1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 6982068404216338579, guid: c711f181afbfcae4aa8ce68a7d25552a, type: 3}
-  spawnTime: 1
-  spawnTimeRandom: 3
-  target: {fileID: 0}
+  pEnemy: {fileID: 6982068404216338579, guid: c711f181afbfcae4aa8ce68a7d25552a, type: 3}
+  spawnTime: 2
   maxNoEnemies: 3
+  randomizeSpawnTime: 0
+  minRandomRange: 0
+  maxRandomRange: 1
 --- !u!1 &2194149046179940437
 GameObject:
   m_ObjectHideFlags: 0
