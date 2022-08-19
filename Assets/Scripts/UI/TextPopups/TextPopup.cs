@@ -24,7 +24,7 @@ namespace TemplateProject
         }
         public static TextPopup Create(Vector3 position, string text, int fontSize, Vector3 direction, TextPopupEffect textPopupEffect = TextPopupEffect.NONE, float effectStrength = 20f, float disappearTimer = 1f)
         {
-            TextPopup textPopup = DamageTextPopupPool.instance.Spawn();
+            TextPopup textPopup = TextPopupPool.instance.Spawn();
             textPopup.Setup(text, fontSize, direction, textPopupEffect, effectStrength, disappearTimer);
             textPopup.gameObject.transform.SetPositionAndRotation(position, Quaternion.identity);
 

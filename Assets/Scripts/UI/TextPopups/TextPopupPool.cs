@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class DamageTextPopupPool : MonoBehaviour
+public class TextPopupPool : MonoBehaviour
 {
     // singleton pattern
-    public static DamageTextPopupPool instance;
+    public static TextPopupPool instance;
     private void Awake()
     {
         if (instance == null)
