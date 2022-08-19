@@ -33,15 +33,18 @@ public class PlayerWeaponSystem : MonoBehaviour
     }
     private void Start()
     {
+        OnWeaponChanged += RefreshWeaponVisuals;
         _weaponInventory = new WeaponInventory(_defaultWeapon);
         _weaponInventory.OnWeaponChanged += TriggerOnWeaponChanged;
         _weaponInventory.OnWeaponChanged += InterruptReload;
         _shootingSystem = new ShootingSystem();
         _reloadSystem = new ReloadSystem(this, _weaponInventory);
         _reloadSystem.OnReloaded += TriggerOnAmmoChanged;
+        OnWeaponChanged();
     }
     private void OnEnable()
     {
+        OnWeaponChanged += RefreshWeaponVisuals;
         if (_weaponInventory != null)
         {
             _weaponInventory.OnWeaponChanged += TriggerOnWeaponChanged;
@@ -54,6 +57,7 @@ public class PlayerWeaponSystem : MonoBehaviour
     }
     private void OnDisable()
     {
+        OnWeaponChanged -= RefreshWeaponVisuals;
         if (_weaponInventory != null)
         {
             _weaponInventory.OnWeaponChanged -= TriggerOnWeaponChanged;
@@ -70,14 +74,13 @@ public class PlayerWeaponSystem : MonoBehaviour
     }
     private void RefreshWeaponVisuals()
     {
-        _currentWeaponSprite.sprite = CurrentWeapon.WeaponData._sprite;
-        _currentWeaponSprite.color = CurrentWeapon.WeaponData._color;
+        _currentWeaponSprite.sprite = CurrentWeapon.WeaponData.Sprite();
+        _currentWeaponSprite.color = CurrentWeapon.WeaponData.Color();
     }
     public void ToggleWeaponSlot()
     {
         InterruptReload();
         _weaponInventory.ChangeToLastWeapon();
-        RefreshWeaponVisuals();
     }
     public void ChangeWeapon(int weaponIdx)
     {

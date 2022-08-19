@@ -12,7 +12,7 @@ public class WeaponInventory
     public int WeaponIdx { get { return _weaponIdx; } }
     public WeaponInventory(WeaponData templateWeapon)
     {
-        _ammoReserve = new AmmoReserve(50, 20, 100, 5);
+        _ammoReserve = new AmmoReserve(60, 40, 120, 20);
         _weapons[0] = null;
         _weapons[1] = null;
         _weapons[2] = new Weapon(templateWeapon, templateWeapon._magazineSize);
