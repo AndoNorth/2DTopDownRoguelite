@@ -30,8 +30,8 @@ public class Astar2DPathfinding : MonoBehaviour
             ConsumePath();
         }
     }
-    public void InvokeFindPath() => InvokeRepeating("FindPath", 0.5f, 1.0f);
-    public void CancelFindPath() => CancelInvoke();
+    public void InvokeFindPath() => InvokeRepeating("FindPath", 0.1f, 1.0f);
+    public void CancelFindPath() => CancelInvoke("FindPath");
     public void FindPath() => FindPath(this.transform.position, _target.position);
     // Astar pathfinding
     public void FindPath(Vector3 startPos, Vector3 targetPos)

@@ -33,6 +33,9 @@ public class Enemy : MonoBehaviour
     private Vector3 _directionVector;
     private Vector3 _patrolAnchorPos;
     private bool _isSetup;
+    public bool SetupBool { get { return _isSetup; } }
+    bool _reset;
+    public bool ResetBool { get { return _reset; } }
 
     private void Awake()
     {
@@ -44,10 +47,8 @@ public class Enemy : MonoBehaviour
     }
     private void Start()
     {
-        FindTarget();
         _healthSystem.OnHealthChanged += TakeDamageVisuals;
-        _isSetup = false;
-        SetupStateMachine();
+        Reset();
     }
     private void FixedUpdate()
     {
@@ -70,14 +71,17 @@ public class Enemy : MonoBehaviour
         }
     }
     private void FindTarget() => _target = GameAssets.instance.playerCharacter;
-    private void ResetSystems()
+    private void Reset()
     {
-        _isSetup = false;
-        SetupStateMachine();
+        SetReset(false);
+        SetSetup(false);
 
         ResetHealthSystem();
+
+        FindTarget();
         ResetPathfindingSystem();
 
+        SetupStateMachine();
 
         void ResetHealthSystem()
         {
@@ -88,7 +92,8 @@ public class Enemy : MonoBehaviour
             _directionVector = Vector3.zero;
             _patrolAnchorPos = this.transform.position;
             _pathfinding.SetTarget(this.transform.position);
-            _pathfinding.CancelInvoke();
+            _pathfinding.SetTarget(_target);
+            _pathfinding.CancelFindPath();
         }
     }
     public void Spawn(Vector3 spawnPos)
@@ -98,6 +103,7 @@ public class Enemy : MonoBehaviour
     // interfaces for state machine
     // setup
     private void SetSetup(bool setup) => _isSetup = setup;
+    private void SetReset(bool reset) => _reset = reset;
     // patrol
     private void PatrolMovement()
     {
@@ -164,7 +170,6 @@ public class Enemy : MonoBehaviour
     }
     private void InvokeFindPath() => _pathfinding.InvokeFindPath();
     private void CancelFindPath() => _pathfinding.CancelFindPath();
-    private void SetTargetToPlayer() => _pathfinding.SetTarget(GameAssets.instance.playerCharacter);
     // visuals
     private void TakeDamageVisuals() => SpriteChanger.instance.ChangeSpriteColorForTime(_spriteRenderer, Color.white, _color, 0.3f);
     private void StatePopupText() => TemplateProject.TextPopup.Create(Vector3.zero, _stateMachine.CurrentState, 16, Vector3.up, TemplateProject.TextPopup.TextPopupEffect.FLOAT, 1f, 1f);
@@ -172,7 +177,8 @@ public class Enemy : MonoBehaviour
     private void SetupStateMachine()
     {
         // initialise states
-        TemplateState template = new TemplateState(_debugStateMachine);
+        TemplateState template = new TemplateState(_debugStateMachine, this);
+        ResetState reset = new ResetState(_debugStateMachine, this);
         SetupState setup = new SetupState(_debugStateMachine, this);
         PatrolState patrol = new PatrolState(_debugStateMachine, this);
         AggroState aggro = new AggroState(_debugStateMachine, this);
@@ -181,18 +187,19 @@ public class Enemy : MonoBehaviour
         // initialise state machine
         _stateMachine = new StateMachine();
         // state transitions
-        _stateMachine.SetState(template);
         At(setup, patrol, IsSetup());
         At(patrol, aggro, AggroBool());
         At(aggro, patrol, LoseAggroBool());
         At(flee, aggro, SafeDistance());
         At(flee, patrol, LoseAggroBool());
+        _stateMachine.addAnyTransition(reset, IsResetSet());
         _stateMachine.addAnyTransition(setup, IsNotSetup());
         _stateMachine.addAnyTransition(dead, IsDead());
         _stateMachine.addAnyTransition(flee, RetreatBool());
         // func bool methods
-        Func<bool> IsSetup() => () => _isSetup;
-        Func<bool> IsNotSetup() => () => !_isSetup;
+        Func<bool> IsSetup() => () => SetupBool;
+        Func<bool> IsNotSetup() => () => !SetupBool;
+        Func<bool> IsResetSet() => () => ResetBool;
         Func<bool> AggroBool() => () => InRange(_aggroRange);
         Func<bool> RetreatBool() => () => InRange(_retreatRange) || HPBelowRetreatThreshold();
         Func<bool> SafeDistance() => () => OutOfRange(_retreatRange);
@@ -207,6 +214,7 @@ public class Enemy : MonoBehaviour
     private bool HPBelowRetreatThreshold() => _healthSystem.HealthPercent() <= _retreatPercentage;
     private void Tick() => _stateMachine.Tick();
     // states
+    #region States
     class SetupState : IState
     {
         string stateName = "Setup State";
@@ -224,7 +232,6 @@ public class Enemy : MonoBehaviour
         {
             if (!_enemy._isSetup)
             {
-                _enemy.ResetSystems();
                 _enemy.SetSetup(true);
             }
         }
@@ -384,7 +391,6 @@ public class Enemy : MonoBehaviour
                 Debug.Log("Entered " + stateName);
                 TemplateProject.TextPopup.Create(textPosition, "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
             }
-            _enemy.SetTargetToPlayer();
             _enemy.InvokeFindPath();
         }
         public void OnExit()
@@ -397,14 +403,54 @@ public class Enemy : MonoBehaviour
             _enemy.CancelFindPath();
         }
     }
+    class ResetState : IState
+    {
+        string stateName = "Reset State";
+        public string StateName() => stateName;
+        private bool debugLogs = false;
+
+        Vector3 textPosition => _enemy.transform.position + Vector3.up * 0.5f;
+
+        private Enemy _enemy;
+        public ResetState(bool debug, Enemy enemy)
+        {
+            debugLogs = debug;
+            _enemy = enemy;
+        }
+        public void Tick()
+        {
+            _enemy.Reset();
+        }
+        public void OnEnter()
+        {
+            if (debugLogs)
+            {
+                Debug.Log("Entered " + stateName);
+                TemplateProject.TextPopup.Create(textPosition, "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
+            }
+        }
+        public void OnExit()
+        {
+            if (debugLogs)
+            {
+                Debug.Log("Exiting " + stateName);
+                TemplateProject.TextPopup.Create(textPosition, "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
+            }
+        }
+    }
     class TemplateState : IState
     {
         string stateName = "Template State";
         public string StateName() => stateName;
         private bool debugLogs = false;
-        public TemplateState(bool debug)
+
+        Vector3 textPosition => _enemy.transform.position + Vector3.up * 0.5f;
+
+        private Enemy _enemy;
+        public TemplateState(bool debug, Enemy enemy)
         {
             debugLogs = debug;
+            _enemy = enemy;
         }
         public void Tick()
         {
@@ -415,7 +461,7 @@ public class Enemy : MonoBehaviour
             if (debugLogs)
             {
                 Debug.Log("Entered " + stateName);
-                TemplateProject.TextPopup.Create(new Vector3(0, 4), "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
+                TemplateProject.TextPopup.Create(textPosition, "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
             }
         }
         public void OnExit()
@@ -423,8 +469,9 @@ public class Enemy : MonoBehaviour
             if (debugLogs)
             {
                 Debug.Log("Exiting " + stateName);
-                TemplateProject.TextPopup.Create(new Vector3(0, 4), "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
+                TemplateProject.TextPopup.Create(textPosition, "Entered State: " + stateName, 12, Vector3.zero, TemplateProject.TextPopup.TextPopupEffect.NONE, 0f, 1f);
             }
         }
     }
+    #endregion
 }
