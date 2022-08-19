@@ -17,9 +17,7 @@ public class GameStateDisplay : MonoBehaviour
             _lastNoEnemies = GameManager.instance._noEnemies;
             string text = "Enemies Left: " + _lastNoEnemies;
             if (_lastNoEnemies <= 0)
-            {
                 text = "All Enemies Killed";
-            }
             _gameStateText.text = text;
         }
     }

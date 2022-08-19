@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using TMPro;
+﻿using TMPro;
+using UnityEngine;
 // this is a dynamically sized text tooltip
 // can be called by any other script using a delegate which returns a string
 // code monkey - https://www.youtube.com/watch?v=YUIohCXt_pc
