@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: exampleItemGO
       objectReference: {fileID: 0}
+    - target: {fileID: 7573515200959921131, guid: f8fb0b28b3ecc414bb973650c8af4500, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7573515200959921143, guid: f8fb0b28b3ecc414bb973650c8af4500, type: 3}
       propertyPath: m_RootOrder
       value: 0

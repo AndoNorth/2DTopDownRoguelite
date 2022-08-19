@@ -27,10 +27,16 @@ public class GameManager : MonoBehaviour
         Stage,
         End
     }
-    public bool _isMapSetup = false;
+    /* 
+     * start
+     * setup
+     * end current stage
+     * 
+     */
     private void Start()
     {
         _gameState = GameState.Setup;
+        _noCoins += 30;
     }
     // this scripts responsibility is to manage the game state
     private void Update()
@@ -44,7 +50,8 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case GameState.Stage:
-                if(_noEnemies <= 0 || GameAssets.instance.playerCharacter.GetComponent<HealthSystem>().CurrentHealth <= 0)
+                bool IsCharacterDead = GameAssets.instance.playerCharacter.GetComponent<HealthSystem>().CurrentHealth <= 0;
+                if (_noEnemies <= 0 || IsCharacterDead)
                 {
                     _gameState = GameState.End;
                     PauseMenu.GameOver();
