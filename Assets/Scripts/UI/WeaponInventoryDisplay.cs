@@ -40,6 +40,7 @@ public class WeaponInventoryDisplay : MonoBehaviour
         GeneralUtility.UI_Bar.Outline outline = new GeneralUtility.UI_Bar.Outline(1f, Color.black);
         _reloadBar = new GeneralUtility.UI_Bar(transform, anchorPosition, barSize, Color.black, Color.white, 1f, outline);
         _reloadBar.gameObject.transform.rotation = Quaternion.Euler(0, 0, 90);
+        /* helper function */
         Image GetImageWithString(Image[] imageArray, string imageString)
         {
             foreach (Image image in imageArray)
