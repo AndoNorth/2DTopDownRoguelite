@@ -8,7 +8,8 @@ public class HealthDisplay : MonoBehaviour
     private GeneralUtility.UI_Bar _healthBarUI;
     [SerializeField] Vector2 barSize;
     [SerializeField] Vector2 anchorPosition;
-    void Start()
+
+    public void InitialiseHealthBarUI()
     {
         GeneralUtility.UI_Bar.Outline outline = new GeneralUtility.UI_Bar.Outline(2f, Color.black);
         _healthBarUI = new GeneralUtility.UI_Bar(transform, anchorPosition, barSize, Color.white, Color.red, 1f, outline);
@@ -17,6 +18,7 @@ public class HealthDisplay : MonoBehaviour
         _healthSystem.OnHealthChanged += UpdateHealthUI;
         UpdateHealthUI();
     }
+
     private void OnEnable()
     {
         if(_healthSystem != null)

@@ -22,7 +22,8 @@ public class WeaponInventoryDisplay : MonoBehaviour
     private GeneralUtility.UI_Bar _reloadBar;
     [SerializeField] private Vector2 barSize;
     [SerializeField] private Vector2 anchorPosition;
-    private void Start()
+    private bool _isSetup = false;
+    public void InitialiseWeaponInventoryDisplayUI()
     {
         _emptyWeaponSprite = GameAssets.instance.templateWeaponGO.GetComponent<SpriteRenderer>().sprite;
         _firstWeaponOutline = GetImageWithString(_firstWeaponImage.GetComponentsInParent<Image>(), "Outline");
@@ -40,6 +41,7 @@ public class WeaponInventoryDisplay : MonoBehaviour
         GeneralUtility.UI_Bar.Outline outline = new GeneralUtility.UI_Bar.Outline(1f, Color.black);
         _reloadBar = new GeneralUtility.UI_Bar(transform, anchorPosition, barSize, Color.black, Color.white, 1f, outline);
         _reloadBar.gameObject.transform.rotation = Quaternion.Euler(0, 0, 90);
+        _isSetup = true;
         /* helper function */
         Image GetImageWithString(Image[] imageArray, string imageString)
         {
@@ -51,9 +53,10 @@ public class WeaponInventoryDisplay : MonoBehaviour
             return null;
         }
     }
+
     private void Update()
     {
-        if (_playerWeaponSystem.IsReloading)
+        if (_isSetup && _playerWeaponSystem.IsReloading)
             _timeSpentReloading += Time.deltaTime;
         else
             _timeSpentReloading = 0;
@@ -177,7 +180,7 @@ public class WeaponInventoryDisplay : MonoBehaviour
     }
     private void UpdateReloadTimerUI()
     {
-        if (_reloadBar != null)
+        if (_isSetup && _reloadBar != null)
         {
             if (_timeSpentReloading > _currentWeapon.WeaponData._reloadTime)
             {
