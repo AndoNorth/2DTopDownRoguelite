@@ -20,7 +20,6 @@ public class GameAssets : MonoBehaviour
     }
     private void Start()
     {
-        playerCharacter = FindObjectOfType<PlayerInput>().gameObject;
         SetupLayerList();
     }
     private void SetupLayerList()
@@ -35,11 +34,14 @@ public class GameAssets : MonoBehaviour
             }
         }
     }
+
     [Header("static references")]
     public Sprite white1x1;
     public TrailRenderer ShotTrail;
     public TemplateProject.TextPopup pfTextPopup;
     public GameObject playerCharacter;
+    public GameObject pfPlayerCharacter;
+    public GameObject pfMapGenerator;
     public DamageProjectile templateBullet;
     public PickUpWeapon templateWeaponGO;
     public PickUpWeaponUpgrade templateWeaponUpgradeGO;

@@ -213,7 +213,7 @@ public class MapGenerator : MonoBehaviour
 			return false;
 		}
 	}
-	private void ResetGrid()
+	public void ResetGrid()
 	{
 		// set internal grid size variables depending on the size of worldUnitsInOneGridCell - set this to your tileSize, this variable should be 1 for simplicity
 		_roomHeight = Mathf.RoundToInt(_roomSizeWorldUnits.x / _worldUnitsInOneGridCell);

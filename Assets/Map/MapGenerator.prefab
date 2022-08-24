@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5137629029557418451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5137629029557418448}
+  - component: {fileID: 5137629029557418449}
+  - component: {fileID: 5137629029557418454}
+  m_Layer: 0
+  m_Name: MapGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5137629029557418448
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5137629029557418451}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5137629029557418449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5137629029557418451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70166cb193bd447438448d46cbd7013a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadGridName: gridMap_0
+  _roomSizeWorldUnits: {x: 50, y: 50}
+  _roomWorldOffset: {x: 0.5, y: 0.5}
+  _wallObj: {fileID: 1502750715140536, guid: 3447697fe54533c49ab73319aa05251d, type: 3}
+  _floorObj: {fileID: 1652600507776870, guid: c5d555e5047fcd146a6c6b7c6edd8072, type: 3}
+  _unbreakableWallObj: {fileID: 1502750715140536, guid: a68950ebd2515594cbe718721ababe3e, type: 3}
+  _pfEnemySpawners:
+  - {fileID: 442433443112728483, guid: 8feb3ff48b3771f41968340a1f8f4537, type: 3}
+  - {fileID: 442433443112728483, guid: 4cd8862c2b6fe784fb57be0237014a3f, type: 3}
+  _pfShopkeeper: {fileID: 2143781376158376114, guid: 47e1a564734f956419aad5e237ec489a, type: 3}
+  _removeSingleWalls: 0
+  _unbreakableBorder: 0
+  _percentToFill: 0.4
+  _percentToStartSpawners: 0.2
+  _chanceToCreateSpawner: 0.05
+  _maxNoSpawners: 10
+  _percentToStartShopkeepers: 0.05
+  _chanceToCreateShopkeeper: 0.05
+  _maxNoShopkeepers: 2
+  _chanceWalkerChangesDir: 0.5
+  _chanceWalkerSplits: 0.1
+  _chanceWalkerSpawns: 0
+  _chanceWalkerDies: 0.05
+  _firstWalkerSpawnPoint: 4
+  _initNoWalkers: 1
+  _minWalkers: 1
+  _maxWalkers: 10
+--- !u!114 &5137629029557418454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5137629029557418451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4090c5b884584ab419c99f3e5c3579ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  gridWorldSize: {x: 50, y: 50, z: 0}
+  nodeRadius: 0.5

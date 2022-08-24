@@ -21,16 +21,6 @@ public class PauseMenu : MonoBehaviour
     }
     private void Update()
     {
-        /*
-        if (_isGameOver && !_gameIsPaused)
-        {
-            Pause();
-        }
-        */
-        if(GameAssets.instance.playerCharacter.GetComponent<HealthSystem>().CurrentHealth <= 0)
-        {
-            Pause();
-        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (_gameIsPaused && !_isGameOver)
