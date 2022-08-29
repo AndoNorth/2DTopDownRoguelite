@@ -496,10 +496,10 @@ public class MapGenerator : MonoBehaviour
 		/* helper functions */
 		void AddGridSpaceToList(int x, int y) => gridSaveObjectList.Add(new GridSaveObject(x, y, _grid[x, y]));
 	}
-
-	public void LoadGrid()
+	public void LoadGrid() => LoadGrid(loadGridName);
+	public void LoadGrid(string loadName)
 	{
-		SaveObject saveObject = SaveLoadSystem.LoadObject<SaveObject>(loadGridName);
+		SaveObject saveObject = SaveLoadSystem.LoadObject<SaveObject>(loadName);
 		foreach (GridSaveObject gridSaveObject in saveObject.gridSaveObjectArray)
 		{
 			_grid[gridSaveObject.x, gridSaveObject.y] = gridSaveObject.gridSpace;
