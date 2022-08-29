@@ -287,6 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2a445f0a31a024c978ea6231e26a06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stageCompletionCoins: 30
   _noEnemies: 0
   _noCoins: 0
 --- !u!4 &78302100
@@ -766,7 +767,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7771587, y: 1}
+    m_SensorSize: {x: 1.7765363, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2750,8 +2751,10 @@ MonoBehaviour:
   white1x1: {fileID: 21300000, guid: 72318150ff5b5e24681a0351f628fac5, type: 3}
   ShotTrail: {fileID: 7639904062614929219, guid: c34501c4064d9894995a7627744989cc, type: 3}
   pfTextPopup: {fileID: 7118437960672705190, guid: 7be139fa46acd134cbe8bf4165c8a70b, type: 3}
+  playerCharacter: {fileID: 0}
   pfPlayerCharacter: {fileID: 4846304307318122155, guid: 0874b710d74fa644bad647b9c41ac425, type: 3}
   pfMapGenerator: {fileID: 5137629029557418451, guid: 2a7791ae8578c3145accee0480b43ed6, type: 3}
+  pfNextStage: {fileID: 1652600507776870, guid: 87a3c95213ded904c9719584a42fdadb, type: 3}
   templateBullet: {fileID: 6770550561945980524, guid: 5d19b1bfb43db1a44bba8a8cabbb052c, type: 3}
   templateWeaponGO: {fileID: 8705080430264896122, guid: 2c4f5f3237c66eb46b2069b9a7a71259, type: 3}
   templateWeaponUpgradeGO: {fileID: -8621841229340788932, guid: 3e5ddebfa3206e2438fcd3333eb0034b, type: 3}

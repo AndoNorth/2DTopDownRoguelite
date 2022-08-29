@@ -42,6 +42,7 @@ public class GameAssets : MonoBehaviour
     public GameObject playerCharacter;
     public GameObject pfPlayerCharacter;
     public GameObject pfMapGenerator;
+    public GameObject pfNextStage;
     public DamageProjectile templateBullet;
     public PickUpWeapon templateWeaponGO;
     public PickUpWeaponUpgrade templateWeaponUpgradeGO;

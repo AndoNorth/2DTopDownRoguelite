@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     private WeaponInventoryDisplay _weaponInventoryUI;
     private Cinemachine.CinemachineVirtualCamera _VirtualCamera;
     private HealthSystem _playerHealthSystem;
+    private bool _stageStarted = false;
     [SerializeField] private int _stageCompletionCoins = 30;
     public int _noEnemies = 0;
     public int _noCoins = 0;
@@ -62,15 +63,24 @@ public class GameManager : MonoBehaviour
                 _mapGenerator.ResetGrid();
                 _mapGenerator.GenerateLevel();
                 _mapGenerator.SpawnLevel();
+                GameAssets.instance.playerCharacter.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
                 _gameState = GameState.Stage;
                 break;
             case GameState.Stage:
-                if (_noEnemies <= 0 || _playerHealthSystem.IsDead)
+                if (_playerHealthSystem.IsDead)
                 {
                     _gameState = GameState.End;
                     PauseMenu.GameOver();
                 }
-                // TODO: add a mechanism to go to next stage
+                if(_noEnemies <= 0 && _stageStarted)
+                {
+                    GameObject nextStageGO = Instantiate(GameAssets.instance.pfNextStage);
+                    nextStageGO.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
+                }
+                else if (_noEnemies > 0)
+                {
+                    _stageStarted = true;
+                }
                 break;
             case GameState.End:
                 break;
@@ -91,5 +101,10 @@ public class GameManager : MonoBehaviour
             mapGeneratorGO.transform.SetParent(_environment);
             _mapGenerator = mapGeneratorGO.GetComponent<MapGenerator>();
         }
+    }
+    public void ResetStage()
+    {
+        _stageStarted = false;
+        _gameState = GameState.SetupStage;
     }
 }
