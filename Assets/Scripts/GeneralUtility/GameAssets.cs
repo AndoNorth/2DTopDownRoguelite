@@ -52,4 +52,7 @@ public class GameAssets : MonoBehaviour
     [Header("layer masks")]
     public string[] playerShootableLayers;
     public string[] enemyShootableLayers;
+    [Header("ammo settings")]
+    public AmmoColours ammoColors;
+    public AmmoAmounts ammoAmounts;
 }

@@ -506,4 +506,10 @@ public static class GeneralUtility
     {
         return new Color(UnityEngine.Random.Range(0, 1f), UnityEngine.Random.Range(0, 1f), UnityEngine.Random.Range(0, 1f));
     }
+    public static T GetRandomEnumValue<T>()
+    {
+        var values = Enum.GetValues(typeof(T));
+        int random = UnityEngine.Random.Range(0, values.Length);
+        return (T)values.GetValue(random);
+    }
 }

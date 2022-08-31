@@ -129,4 +129,9 @@ public class PlayerWeaponSystem : MonoBehaviour
         _weaponInventory.PickUpWeaponUpgrade(weaponUpgrade.WeaponUpgrade);
         OnWeaponChanged();
     }
+    public void AddToAmmoReserve(AmmoType ammoType, int ammoAmount)
+    {
+        _weaponInventory.AddReserveAmmo(ammoType, ammoAmount);
+        OnAmmoChanged();
+    }
 }

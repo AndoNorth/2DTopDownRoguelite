@@ -2766,6 +2766,8 @@ MonoBehaviour:
   - Enemies
   enemyShootableLayers:
   - Player
+  ammoColors: {fileID: 11400000, guid: dfb77bcf1606d3e4eb107b9b4b467787, type: 2}
+  ammoAmounts: {fileID: 11400000, guid: 203530008bedb2a4e808b0be2954e469, type: 2}
 --- !u!4 &1079530065
 Transform:
   m_ObjectHideFlags: 0
