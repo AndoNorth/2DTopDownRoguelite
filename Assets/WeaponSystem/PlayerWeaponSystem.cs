@@ -24,6 +24,9 @@ public class PlayerWeaponSystem : MonoBehaviour
     // systems to manage
     private WeaponInventory _weaponInventory;
     public int ReserveAmmo { get { return _weaponInventory.CurrentReserveAmmo; } }
+    private float _currentChangeWeaponCooldown;
+    private float _changeWeaponCooldown = 0.2f;
+    private bool CanChangeWeapon => _currentChangeWeaponCooldown <= 0f;
     private ShootingSystem _shootingSystem;
     private ReloadSystem _reloadSystem;
     public bool IsReloading { get { return _reloadSystem.IsReloading; } }
@@ -36,10 +39,10 @@ public class PlayerWeaponSystem : MonoBehaviour
         OnWeaponChanged += RefreshWeaponVisuals;
         _weaponInventory = new WeaponInventory(_defaultWeapon);
         _weaponInventory.OnWeaponChanged += TriggerOnWeaponChanged;
-        _weaponInventory.OnWeaponChanged += InterruptReload;
         _shootingSystem = new ShootingSystem();
         _reloadSystem = new ReloadSystem(this, _weaponInventory);
         _reloadSystem.OnReloaded += TriggerOnAmmoChanged;
+        _weaponInventory.OnWeaponChanged += InterruptReload;
         OnWeaponChanged();
     }
     private void OnEnable()
@@ -48,7 +51,10 @@ public class PlayerWeaponSystem : MonoBehaviour
         if (_weaponInventory != null)
         {
             _weaponInventory.OnWeaponChanged += TriggerOnWeaponChanged;
-            _weaponInventory.OnWeaponChanged += InterruptReload;
+            if (_reloadSystem != null)
+            {
+                _weaponInventory.OnWeaponChanged += InterruptReload;
+            }
         }
         if (_reloadSystem != null)
         {
@@ -61,7 +67,10 @@ public class PlayerWeaponSystem : MonoBehaviour
         if (_weaponInventory != null)
         {
             _weaponInventory.OnWeaponChanged -= TriggerOnWeaponChanged;
-            _weaponInventory.OnWeaponChanged -= InterruptReload;
+            if (_reloadSystem != null)
+            {
+                _weaponInventory.OnWeaponChanged -= InterruptReload;
+            }
         }
         if (_reloadSystem != null)
         {
@@ -70,6 +79,7 @@ public class PlayerWeaponSystem : MonoBehaviour
     }
     private void Update()
     {
+        TickChangeWeaponCooldown();
         _shootingSystem.TickFireCooldown();
     }
     private void RefreshWeaponVisuals()
@@ -79,14 +89,33 @@ public class PlayerWeaponSystem : MonoBehaviour
     }
     public void ToggleWeaponSlot()
     {
-        InterruptReload();
-        _weaponInventory.ChangeToLastWeapon();
+        if (CanChangeWeapon)
+        {
+            InterruptReload();
+            _weaponInventory.ChangeToLastWeapon();
+            OnAmmoChanged();
+            SetChangeWeaponCooldown();
+        }
     }
     public void ChangeWeapon(int weaponIdx)
     {
-        _weaponInventory.ChangeWeapon(weaponIdx);
-        OnAmmoChanged();
+        if (CanChangeWeapon)
+        {
+            InterruptReload();
+            _weaponInventory.ChangeWeapon(weaponIdx);
+            OnAmmoChanged();
+            SetChangeWeaponCooldown();
+        }
     }
+    private void TickChangeWeaponCooldown()
+    {
+        _currentChangeWeaponCooldown -= Time.deltaTime;
+        if (_currentChangeWeaponCooldown <= 0f)
+        {
+            _currentChangeWeaponCooldown = 0f;
+        }
+    }
+    private void SetChangeWeaponCooldown() => _currentChangeWeaponCooldown = _changeWeaponCooldown;
     public void Reload()
     {
         if (!_weaponInventory.HasReserveAmmo || _reloadSystem.MagazineIsFull || IsReloading)
@@ -114,20 +143,34 @@ public class PlayerWeaponSystem : MonoBehaviour
     }
     public void DropCurrentWeapon()
     {
-        _weaponInventory.DropCurrentWeapon();
-        OnWeaponChanged();
-        OnAmmoChanged();
+        if (CanChangeWeapon)
+        {
+            InterruptReload();
+            _weaponInventory.DropCurrentWeapon();
+            OnWeaponChanged();
+            OnAmmoChanged();
+            SetChangeWeaponCooldown();
+        }
     }
     public void PickUpWeapon(PickUpWeapon weapon)
     {
-        _weaponInventory.PickUpWeapon(weapon.Weapon);
-        OnWeaponChanged();
-        OnAmmoChanged();
+        if (CanChangeWeapon)
+        {
+            InterruptReload();
+            _weaponInventory.PickUpWeapon(weapon.Weapon);
+            OnWeaponChanged();
+            OnAmmoChanged();
+            SetChangeWeaponCooldown();
+        }
     }
     public void PickUpWeaponUpgrade(PickUpWeaponUpgrade weaponUpgrade)
     {
-        _weaponInventory.PickUpWeaponUpgrade(weaponUpgrade.WeaponUpgrade);
-        OnWeaponChanged();
+        if (CanChangeWeapon)
+        {
+            _weaponInventory.PickUpWeaponUpgrade(weaponUpgrade.WeaponUpgrade);
+            OnWeaponChanged();
+            SetChangeWeaponCooldown();
+        }
     }
     public void AddToAmmoReserve(AmmoType ammoType, int ammoAmount)
     {

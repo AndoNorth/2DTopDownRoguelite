@@ -26,10 +26,6 @@ public class PlayerInput : MonoBehaviour
     private void GatherInputs()
     {
         _inputDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if (Input.GetKey(KeyCode.Space))
-        {
-            _rollThisFrame = true;
-        }
         if (Input.GetMouseButton(0))
         {
             if (EventSystem.current.IsPointerOverGameObject()) // checks whether the mouse is over a ui element,
@@ -37,6 +33,14 @@ public class PlayerInput : MonoBehaviour
                 return;
             }
             _shootThisFrame = true;
+        }
+        if (Input.GetMouseButton(1))
+        {
+
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            _rollThisFrame = true;
         }
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
@@ -53,9 +57,9 @@ public class PlayerInput : MonoBehaviour
             _weaponIdx = 2;
             _swapWeaponThisFrame = true;
         }
-        if (Input.GetKeyUp(KeyCode.Tab))
+        else if (Input.GetKeyUp(KeyCode.Tab))
         {
-            _swapWeaponThisFrame = true;
+            _swapToLastWeaponThisFrame = true;
         }
         if (Input.GetKeyUp(KeyCode.R))
         {
@@ -129,5 +133,6 @@ public class PlayerInput : MonoBehaviour
         _reloadThisFrame = false;
         _interactThisFrame = false;
         _dropThisFrame = false;
+        _swapToLastWeaponThisFrame = false;
     }
 }

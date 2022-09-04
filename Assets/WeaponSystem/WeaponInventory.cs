@@ -55,6 +55,7 @@ public class WeaponInventory
         UnloadWeapon(CurrentWeapon);
         CurrentWeapon.DropWeapon(GameAssets.instance.playerCharacter.transform.position);
         _weapons[_weaponIdx] = null;
+        ChangeToLastWeapon();
     }
     public void PickUpWeapon(Weapon newWeapon)
     {
