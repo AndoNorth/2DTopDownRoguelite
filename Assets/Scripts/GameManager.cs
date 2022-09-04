@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
         SetupUI,
         SetupStage,
         Stage,
+        StageOver,
         End
     }
     public static GameManager instance;
@@ -76,11 +77,14 @@ public class GameManager : MonoBehaviour
                 {
                     GameObject nextStageGO = Instantiate(GameAssets.instance.pfNextStage);
                     nextStageGO.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
+                    _gameState = GameState.StageOver;
                 }
                 else if (_noEnemies > 0)
                 {
                     _stageStarted = true;
                 }
+                break;
+            case GameState.StageOver:
                 break;
             case GameState.End:
                 break;
