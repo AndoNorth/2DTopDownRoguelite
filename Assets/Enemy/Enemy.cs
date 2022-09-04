@@ -48,7 +48,7 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         _healthSystem.OnHealthChanged += TakeDamageVisuals;
-        Reset();
+        Invoke("Reset", 0.2f); // reset the enemy so pathfinding works as intended
     }
     private void FixedUpdate()
     {

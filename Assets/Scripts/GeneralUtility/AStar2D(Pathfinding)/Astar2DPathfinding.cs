@@ -6,7 +6,7 @@ public class Astar2DPathfinding : MonoBehaviour
     private Astar2DGrid _grid;
     private Vector3 _targetPos;
     private Transform _target;
-    public bool EndNodeReached => pathList.Count <= 1;
+    public bool EndNodeReached => pathList?.Count <= 1;
     private bool NextNodeReached => TargetReached(pathList[0].worldPosition);
     public Vector3 NextPosition => pathList[0].worldPosition;
     private float _targetReachedThreshold = 0.3f;
@@ -22,7 +22,6 @@ public class Astar2DPathfinding : MonoBehaviour
     private void Update()
     {
         if (EndNodeReached){
-            CancelInvoke();
             return;
         }
         if (NextNodeReached)
@@ -36,7 +35,7 @@ public class Astar2DPathfinding : MonoBehaviour
     // Astar pathfinding
     public void FindPath(Vector3 startPos, Vector3 targetPos)
     {
-        _grid.CreateGrid(); // updates the state of grid spaces, consider optimizing
+        // _grid.CreateGrid(); // updates the state of grid spaces, consider optimizing since it causes a HUGE framerate drop
 
         Astar2DNode startNode = _grid.NodeFromWorldPoint(startPos);
         Astar2DNode targetNode = _grid.NodeFromWorldPoint(targetPos);
