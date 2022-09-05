@@ -6,16 +6,27 @@ public class MapGenerator : MonoBehaviour
     // debug map generator
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I)) { ResetGrid(); }
-        if (Input.GetKeyDown(KeyCode.O)) { GenerateLevel(); }
-        if (Input.GetKeyDown(KeyCode.P)) { SpawnLevel(); }
-        if (Input.GetKeyDown(KeyCode.K)) { SaveGrid(); }
-        if (Input.GetKeyDown(KeyCode.L)) { LoadGrid(); }
+        if (_buildMode)
+        {
+			if (Input.GetKeyDown(KeyCode.I)) { ResetGrid(); }
+			if (Input.GetKeyDown(KeyCode.O)) { GenerateLevel(); }
+			if (Input.GetKeyDown(KeyCode.P)) { SpawnLevel(); }
+			if (Input.GetKeyDown(KeyCode.K)) { SaveGrid(); }
+			if (Input.GetKeyDown(KeyCode.L)) { LoadGrid(); }
+
+			if (_grid != null && _grid.Length > 0 && Input.GetMouseButtonDown(0))
+			{
+				Vector3 position = GeneralUtility.GetMouseWorldPosition();
+				SetGridSpace(GetGridFromWorldPosition(position), _currentGridSpace);
+			}
+		}
     }
     public enum GridSpace { empty, floor, wall, spawner, shopkeeper };
 	private GridSpace[,] _grid;
 	private int _roomHeight, _roomWidth;
 	private float _worldUnitsInOneGridCell = 1;
+	[SerializeField] private bool _buildMode;
+	[SerializeField] private GridSpace _currentGridSpace;
 	[Header("Map Generator Setup")]
 	[SerializeField] private string loadGridName = "gridMap_0";
 	[SerializeField] private Vector2 _roomSizeWorldUnits = new Vector2(50, 50);
@@ -403,6 +414,18 @@ public class MapGenerator : MonoBehaviour
 	{
 		return GetGridPosition((int)gridPos.x, (int)gridPos.y);
 	}
+	private Vector2 GetGridFromWorldPosition(Vector3 worldPos) => GetGridFromWorldPosition(new Vector2(worldPos.x, worldPos.y));
+	private Vector2 GetGridFromWorldPosition(Vector2 worldPos)
+    {
+		Vector2 offset = _roomSizeWorldUnits / 2.0f;
+		Vector2 gridXY = (worldPos - _roomWorldOffset + offset) / _worldUnitsInOneGridCell;
+		return new Vector2((int)gridXY.x, (int)gridXY.y);
+	}
+	private void SetGridSpace(Vector2 xy, GridSpace gridSpace) => SetGridSpace((int) xy.x, (int) xy.y, gridSpace);
+	private void SetGridSpace(int x, int y, GridSpace gridSpace)
+    {
+		_grid[x, y] = gridSpace;
+    }
 	// 0 = top-left   , 1 = top-middle   , 2 = top-right,        
 	// 3 = middle-left, 4 = center       , 5 = middle-right,  
 	// 6 = bottom-left, 7 = bottom-middle, 8 = bottom-right
@@ -504,5 +527,64 @@ public class MapGenerator : MonoBehaviour
 		{
 			_grid[gridSaveObject.x, gridSaveObject.y] = gridSaveObject.gridSpace;
 		}
+	}
+
+    private void OnDrawGizmos()
+    {
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireCube(transform.position - (Vector3) _roomWorldOffset*2, new Vector3(_roomHeight, _roomWidth, 1));
+		if (_grid != null &&  _grid.Length > 0)
+		{
+			LoopThroughAllGridSpaces(DrawGizmoOnGridSpace);
+		}
+		/* helper functions */
+		void DrawGizmoOnGridSpace(int x, int y)
+        {
+			Color gizmoColor = Color.green;
+			bool drawCircle = false;
+            switch (_grid[x,y])
+            {
+                case GridSpace.empty:
+                    break;
+                case GridSpace.floor:
+					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
+					gizmoColor = Color.gray;
+					break;
+                case GridSpace.wall:
+					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
+					gizmoColor = Color.blue;
+					break;
+                case GridSpace.spawner:
+					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
+					gizmoColor = Color.red;
+					drawCircle = true;
+					break;
+                case GridSpace.shopkeeper:
+					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
+					gizmoColor = Color.cyan;
+					drawCircle = true;
+					break;
+                default:
+                    break;
+			}
+			DrawGridSpace(GetGridPosition(x,y), gizmoColor, drawCircle);
+
+			Gizmos.color = Color.magenta;
+			Vector3 pos = GeneralUtility.GetMouseWorldPosition();
+			Gizmos.DrawSphere(pos, 0.3f);
+
+			void DrawGridSpace(Vector2 worldSpace,Color color, bool drawCircle)
+            {
+				Gizmos.color = color;
+                if (drawCircle)
+                {
+					Gizmos.DrawSphere(worldSpace, (_worldUnitsInOneGridCell <= 0.1f ? 0.1f : (_worldUnitsInOneGridCell - 0.1f) )/2 );
+				}
+                else
+                {
+					Gizmos.DrawCube(worldSpace, Vector3.one * (_worldUnitsInOneGridCell <= 0.1f ? 0.1f : (_worldUnitsInOneGridCell - 0.1f) ) );
+				}
+            }
+        };
 	}
 }
