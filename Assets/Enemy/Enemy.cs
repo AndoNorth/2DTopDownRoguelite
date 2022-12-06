@@ -212,7 +212,7 @@ public class Enemy : MonoBehaviour
     private bool InRange(float range) => Vector3.Distance(_target.transform.position, transform.position) <= range;
     private bool OutOfRange(float range) => Vector3.Distance(_target.transform.position, transform.position) > range;
     private bool HPBelowRetreatThreshold() => _healthSystem.HealthPercent() <= _retreatPercentage;
-    private void Tick() => _stateMachine.Tick();
+    private void Tick() => _stateMachine?.Tick();
     // states
     #region States
     class SetupState : IState

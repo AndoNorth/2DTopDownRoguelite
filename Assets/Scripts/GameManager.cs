@@ -8,10 +8,19 @@ public class GameManager : MonoBehaviour
     {
         SetupScene,
         SetupUI,
+        SetupStartStage,
+        StartStage,
         SetupStage,
         Stage,
         StageOver,
         End
+    }
+    private enum SetupStageState
+    {
+        ResetMap,
+        GenerateMap,
+        SpawnMap,
+        SetPlayer,
     }
     public static GameManager instance;
     private Transform _environment;
@@ -25,6 +34,7 @@ public class GameManager : MonoBehaviour
     public int _noEnemies = 0;
     public int _noCoins = 0;
     private GameState _gameState = GameState.SetupScene;
+    private SetupStageState _stageState = SetupStageState.ResetMap;
     private void Awake()
     {
         _environment = GameObject.Find("----- Environment -----").transform;
@@ -57,15 +67,41 @@ public class GameManager : MonoBehaviour
             case GameState.SetupUI:
                 _healthUI.InitialiseHealthBarUI();
                 _weaponInventoryUI.InitialiseWeaponInventoryDisplayUI();
-                _gameState = GameState.SetupStage;
+                _gameState = GameState.SetupStartStage;
                 break;
-            case GameState.SetupStage:
-                _noCoins += _stageCompletionCoins;
+            case GameState.SetupStartStage:
                 _mapGenerator.ResetGrid();
-                _mapGenerator.GenerateLevel();
+                _mapGenerator.LoadGrid("start_level1");
                 _mapGenerator.SpawnLevel();
                 GameAssets.instance.playerCharacter.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
                 _gameState = GameState.Stage;
+                break;
+            case GameState.StartStage:
+                EndStage();
+                break;
+            case GameState.SetupStage:
+                switch (_stageState)
+                {
+                    case SetupStageState.ResetMap:
+                        _mapGenerator.ResetGrid();
+                        _stageState = SetupStageState.GenerateMap;
+                        break;
+                    case SetupStageState.GenerateMap:
+                        _mapGenerator.GenerateLevel();
+                        _stageState = SetupStageState.SpawnMap;
+                        break;
+                    case SetupStageState.SpawnMap:
+                        _mapGenerator.SpawnLevel();
+                        _stageState = SetupStageState.SetPlayer;
+                        break;
+                    case SetupStageState.SetPlayer:
+                        GameAssets.instance.playerCharacter.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
+                        _stageState = SetupStageState.ResetMap;
+                        _gameState = GameState.Stage;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case GameState.Stage:
                 if (_playerHealthSystem.IsDead)
@@ -75,9 +111,7 @@ public class GameManager : MonoBehaviour
                 }
                 if(_noEnemies <= 0 && _stageStarted)
                 {
-                    GameObject nextStageGO = Instantiate(GameAssets.instance.pfNextStage);
-                    nextStageGO.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
-                    _gameState = GameState.StageOver;
+                    EndStage();
                 }
                 else if (_noEnemies > 0)
                 {
@@ -104,6 +138,13 @@ public class GameManager : MonoBehaviour
             GameObject mapGeneratorGO = Instantiate(GameAssets.instance.pfMapGenerator);
             mapGeneratorGO.transform.SetParent(_environment);
             _mapGenerator = mapGeneratorGO.GetComponent<MapGenerator>();
+        }
+        void EndStage()
+        {
+            _noCoins += _stageCompletionCoins;
+            GameObject nextStageGO = Instantiate(GameAssets.instance.pfNextStage);
+            nextStageGO.transform.position = _mapGenerator.FirstWalkerSpawnWorldPosition;
+            _gameState = GameState.StageOver;
         }
     }
     public void ResetStage()

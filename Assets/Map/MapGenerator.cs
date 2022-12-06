@@ -14,14 +14,14 @@ public class MapGenerator : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.K)) { SaveGrid(); }
 			if (Input.GetKeyDown(KeyCode.L)) { LoadGrid(); }
 
-			if (_grid != null && _grid.Length > 0 && Input.GetMouseButtonDown(0))
+			if (_grid != null && _grid.Length > 0 && Input.GetMouseButton(0))
 			{
 				Vector3 position = GeneralUtility.GetMouseWorldPosition();
 				SetGridSpace(GetGridFromWorldPosition(position), _currentGridSpace);
 			}
 		}
     }
-    public enum GridSpace { empty, floor, wall, spawner, shopkeeper };
+    public enum GridSpace { empty, floor, wall, unbreakablewall, spawner, shopkeeper };
 	private GridSpace[,] _grid;
 	private int _roomHeight, _roomWidth;
 	private float _worldUnitsInOneGridCell = 1;
@@ -344,6 +344,9 @@ public class MapGenerator : MonoBehaviour
 				Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString()));
 				Spawn(x, y, _wallObj).transform.SetParent(this.transform.Find(GridSpace.wall.ToString()));
 				break;
+			case GridSpace.unbreakablewall:
+				Spawn(x, y, _unbreakableWallObj).transform.SetParent(this.transform.Find(GridSpace.empty.ToString()));
+				break;
 			case GridSpace.spawner:
 				Spawn(x, y, _floorObj).transform.SetParent(this.transform.Find(GridSpace.floor.ToString()));
 				Spawn(x, y, _pfEnemySpawners[Random.Range(0, _pfEnemySpawners.Length)]).transform.SetParent(this.transform.Find(GridSpace.spawner.ToString()));
@@ -469,10 +472,10 @@ public class MapGenerator : MonoBehaviour
 	}
 	private void DestroyChildren()
 	{
-		foreach (Transform child in transform)
-		{
-			GameObject.Destroy(child.gameObject);
-		}
+		while(transform.childCount > 0)
+        {
+			GameObject.DestroyImmediate(transform.GetChild(0).gameObject);
+        }
 	}
 	private void AnalyzeMap()
 	{
@@ -554,7 +557,11 @@ public class MapGenerator : MonoBehaviour
 					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
 					gizmoColor = Color.blue;
 					break;
-                case GridSpace.spawner:
+				case GridSpace.unbreakablewall:
+					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
+					gizmoColor = Color.black;
+					break;
+				case GridSpace.spawner:
 					gizmoColor = _floorObj.GetComponentInChildren<SpriteRenderer>().color;
 					gizmoColor = Color.red;
 					drawCircle = true;
@@ -567,7 +574,7 @@ public class MapGenerator : MonoBehaviour
                 default:
                     break;
 			}
-			DrawGridSpace(GetGridPosition(x,y), gizmoColor, drawCircle);
+			DrawGridSpace(GetGridPosition(x,y) + _roomWorldOffset, gizmoColor, drawCircle);
 
 			Gizmos.color = Color.magenta;
 			Vector3 pos = GeneralUtility.GetMouseWorldPosition();

@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _buildMode: 1
   _currentGridSpace: 0
-  loadGridName: gridMap_0
+  loadGridName: start_level
   _roomSizeWorldUnits: {x: 50, y: 50}
   _roomWorldOffset: {x: 0.5, y: 0.5}
   _wallObj: {fileID: 1502750715140536, guid: 3447697fe54533c49ab73319aa05251d, type: 3}
