@@ -1,11 +1,11 @@
 # 2DTopDownRoguelite
 ## Summary
-2D top down roguelite and bullet hell prototype with systems inspired by games such as: "Nuclear Throne", "The Binding of Isaac" and "Enter the Gungeon"  
+2D top down roguelite and bullet hell prototype with systems inspired by games such as: "Nuclear Throne", "The Binding of Isaac" and "Enter the Gungeon". This project is focussed on implementing systems which are easily customizable by designers.
 
 ## Current Features:
 * Enemy AI - Melee, Ranged - Custom A star pathfinding
 * Weapon System - Inventory, Ammo, Upgrades - using Scriptable Objects with multiple weapon and ammo types
-* Procedural Map Generation - using Drunkard's Walk - Save/Load and map building
+* Procedural Map Generation - using Drunkard's Walk algorithm - Save/Load and custom map building
 * 2D Top Down Player Controller - selection system, shop/pickup/drop weapons and upgrades - dashing
 * Shop, Loot and Health System
 
